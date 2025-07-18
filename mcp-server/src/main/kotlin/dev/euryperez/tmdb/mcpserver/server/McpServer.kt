@@ -22,9 +22,9 @@ class McpServer(private val moviesRepository: MoviesRepository) {
             Implementation(name = "tmdb", version = "1.0.0"),
             ServerOptions(
                 capabilities = ServerCapabilities(
-                    tools = ServerCapabilities.Tools(listChanged = true)
-                )
-            )
+                    tools = ServerCapabilities.Tools(listChanged = true),
+                ),
+            ),
         )
 
         with(server) {
@@ -41,7 +41,7 @@ class McpServer(private val moviesRepository: MoviesRepository) {
 
         val transport = StdioServerTransport(
             System.`in`.asInput(),
-            System.out.asSink().buffered()
+            System.out.asSink().buffered(),
         )
 
         server.connect(transport)

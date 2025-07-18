@@ -13,7 +13,7 @@ import io.ktor.utils.io.ByteReadChannel
 fun MockEngine.Companion.test(
     defaultResponse: String = """{"results":[],"total_pages":1,"page":1,"total_results":0}""",
     status: HttpStatusCode = HttpStatusCode.OK,
-    headers: Headers = headersOf(HttpHeaders.ContentType, "application/json")
+    headers: Headers = headersOf(HttpHeaders.ContentType, "application/json"),
 ) = MockEngine { request ->
     respond(content = ByteReadChannel(defaultResponse), status = status, headers = headers)
 }
@@ -23,7 +23,7 @@ fun MockEngine.Companion.test(
     expectedResponse: String,
     expectedStatusCode: HttpStatusCode = HttpStatusCode.OK,
     headers: Headers = headersOf(HttpHeaders.ContentType, "application/json"),
-    onRequest: (request: HttpRequestData) -> Unit = { }
+    onRequest: (request: HttpRequestData) -> Unit = { },
 ): HttpClientEngine {
     return MockEngine.create {
         addHandler { request ->
@@ -34,7 +34,7 @@ fun MockEngine.Companion.test(
                     respond(
                         content = ByteReadChannel(expectedResponse),
                         status = expectedStatusCode,
-                        headers = headers
+                        headers = headers,
                     )
                 }
 
@@ -44,7 +44,7 @@ fun MockEngine.Companion.test(
     }
 }
 
-fun MockEngine.Companion.test(throwable: Throwable) : HttpClientEngine {
+fun MockEngine.Companion.test(throwable: Throwable): HttpClientEngine {
     return MockEngine.create {
         addHandler { request ->
             throw throwable

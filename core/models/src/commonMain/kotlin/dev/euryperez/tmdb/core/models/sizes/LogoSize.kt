@@ -7,5 +7,5 @@ enum class LogoSize(val value: String) {
     W185("w185"),
     W300("w300"),
     W500("w500"),
-    ORIGINAL("original")
+    ORIGINAL("original"),
 }

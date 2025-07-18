@@ -65,7 +65,6 @@ kotlin {
 
                 implementation(libs.kotlinx.serialization)
                 implementation(libs.kotlinx.datetime)
-
             }
         }
 
@@ -95,5 +94,4 @@ kotlin {
             }
         }
     }
-
 }

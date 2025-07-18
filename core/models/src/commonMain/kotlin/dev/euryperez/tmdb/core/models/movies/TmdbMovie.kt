@@ -50,7 +50,7 @@ data class TmdbMovie(
      * Returns the full URL for the movie's poster image.
      *
      * @param size The desired size of the poster image.
-     * @return The full URL string for the poster image, or null 
+     * @return The full URL string for the poster image, or null
      *         if the poster path is not available.
      */
     fun getPosterUrl(size: PosterSize): String? {
@@ -61,7 +61,7 @@ data class TmdbMovie(
      * Returns the full URL for the movie's backdrop image.
      *
      * @param size The desired size of the backdrop image.
-     * @return The full URL string for the backdrop image, or null 
+     * @return The full URL string for the backdrop image, or null
      *         if the backdrop path is not available.
      */
     fun getBackdropUrl(size: PosterSize): String? {

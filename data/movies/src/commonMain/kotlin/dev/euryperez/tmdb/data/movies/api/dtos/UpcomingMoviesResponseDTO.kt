@@ -11,7 +11,7 @@ internal data class UpcomingMoviesResponseDTO(
     val totalPages: Int,
     @SerialName("total_results")
     val totalResults: Int,
-    val dates: DatesDTO
+    val dates: DatesDTO,
 ) {
     companion object
 }

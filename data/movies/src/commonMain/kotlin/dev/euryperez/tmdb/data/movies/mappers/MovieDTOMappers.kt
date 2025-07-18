@@ -32,7 +32,7 @@ internal fun MovieDTO.toDomain(): TmdbMovie {
         adult = adult,
         originalLanguage = originalLanguage,
         originalTitle = originalTitle,
-        video = video
+        video = video,
     )
 }
 
@@ -57,7 +57,7 @@ internal fun MovieDetailsDTO.toDomain(): TmdbMovieDetails {
         revenue = revenue,
         runtime = runtime,
         budget = budget,
-        homepage = homepage
+        homepage = homepage,
     )
 }
 
@@ -70,14 +70,14 @@ internal fun ProductionCompanyDTO.toDomain() = TmdbProductionCompany(id = id, na
 internal fun MovieCreditsResponseDTO.toDomain() = TmdbMovieCredits(
     id = id,
     cast = cast.map { it.toDomain() },
-    crew = crew.map { it.toDomain() }
+    crew = crew.map { it.toDomain() },
 )
 
 internal fun MovieMemberDTO.toDomain() = TmdbMember(
     id = id,
     name = name,
     adult = adult,
-    gender = when(gender) {
+    gender = when (gender) {
         1 -> Gender.Female
         2 -> Gender.Male
         else -> Gender.Unknown
@@ -91,5 +91,5 @@ internal fun MovieMemberDTO.toDomain() = TmdbMember(
     creditId = creditId,
     order = order,
     department = department,
-    job = job
+    job = job,
 )

@@ -67,8 +67,8 @@ class MoviesRepositoryTest : BaseTest {
                 adult = false,
                 originalLanguage = "en",
                 originalTitle = "Test Movie",
-                video = false
-            )
+                video = false,
+            ),
         )
 
         everySuspend {
@@ -141,7 +141,7 @@ class MoviesRepositoryTest : BaseTest {
         val movieDtos = listOf(
             MovieDTO.test(id = 1, title = "Movie 1"),
             MovieDTO.test(id = 2, title = "Movie 2"),
-            MovieDTO.test(id = 3, title = "Movie 3")
+            MovieDTO.test(id = 3, title = "Movie 3"),
         )
 
         val mockApiResponse = MovieListResponseDTO.test(movies = movieDtos)
@@ -201,8 +201,8 @@ class MoviesRepositoryTest : BaseTest {
                 adult = false,
                 originalLanguage = "en",
                 originalTitle = "Test Movie",
-                video = false
-            )
+                video = false,
+            ),
         )
 
         everySuspend {
@@ -275,7 +275,7 @@ class MoviesRepositoryTest : BaseTest {
         val movieDtos = listOf(
             MovieDTO.test(id = 1, title = "Upcoming Movie 1"),
             MovieDTO.test(id = 2, title = "Upcoming Movie 2"),
-            MovieDTO.test(id = 3, title = "Upcoming Movie 3")
+            MovieDTO.test(id = 3, title = "Upcoming Movie 3"),
         )
 
         everySuspend {
@@ -349,8 +349,8 @@ class MoviesRepositoryTest : BaseTest {
                 adult = false,
                 originalLanguage = "en",
                 originalTitle = "Test Movie",
-                video = false
-            )
+                video = false,
+            ),
         )
 
         everySuspend {
@@ -426,7 +426,7 @@ class MoviesRepositoryTest : BaseTest {
         val movieDtos = listOf(
             MovieDTO.test(id = 1, title = "Upcoming Movie 1"),
             MovieDTO.test(id = 2, title = "Upcoming Movie 2"),
-            MovieDTO.test(id = 3, title = "Upcoming Movie 3")
+            MovieDTO.test(id = 3, title = "Upcoming Movie 3"),
         )
 
         val expectedMovies = movieDtos.map { it.toDomain() }
@@ -484,53 +484,51 @@ class MoviesRepositoryTest : BaseTest {
         }
     }
 
-
     @Test
-    fun `getMovieDetails returns success with mapped movie details when api call succeeds`() =
-        runTest {
-            // Given
-            val movieId = 42
-            val language = "en-US"
+    fun `getMovieDetails returns success with mapped movie details when api call succeeds`() = runTest {
+        // Given
+        val movieId = 42
+        val language = "en-US"
 
-            val expectedDetails = TmdbMovieDetails(
-                id = 42,
-                title = "The Answer",
-                overview = "Life, the universe and everything.",
-                posterPath = "/answer.jpg",
-                backdropPath = "/backdrop.jpg",
-                releaseDate = LocalDate(1979, 3, 4),
-                voteAverage = 9.9,
-                voteCount = 420_000,
-                popularity = 1000.0,
-                genres = listOf(TmdbGenre(14, "Sci‑Fi")),
-                adult = false,
-                originalLanguage = "en",
-                originalTitle = "The Answer",
-                video = false,
-                productionCompanies = emptyList(),
-                productionCountries = emptyList(),
-                revenue = 1337,
-                runtime = 113,
-                budget = 4242,
-                homepage = "https://example.com/the-answer"
-            )
+        val expectedDetails = TmdbMovieDetails(
+            id = 42,
+            title = "The Answer",
+            overview = "Life, the universe and everything.",
+            posterPath = "/answer.jpg",
+            backdropPath = "/backdrop.jpg",
+            releaseDate = LocalDate(1979, 3, 4),
+            voteAverage = 9.9,
+            voteCount = 420_000,
+            popularity = 1000.0,
+            genres = listOf(TmdbGenre(14, "Sci‑Fi")),
+            adult = false,
+            originalLanguage = "en",
+            originalTitle = "The Answer",
+            video = false,
+            productionCompanies = emptyList(),
+            productionCountries = emptyList(),
+            revenue = 1337,
+            runtime = 113,
+            budget = 4242,
+            homepage = "https://example.com/the-answer",
+        )
 
-            everySuspend {
-                moviesApi.getMovieDetails(movieId = movieId, language = language)
-            } returns ApiResult.Success(MovieDetailsDTO.test())   // or your own fixture builder
+        everySuspend {
+            moviesApi.getMovieDetails(movieId = movieId, language = language)
+        } returns ApiResult.Success(MovieDetailsDTO.test()) // or your own fixture builder
 
-            // When
-            val result = MoviesRepository.test()
-                .getMovieDetails(movieId, language)
+        // When
+        val result = MoviesRepository.test()
+            .getMovieDetails(movieId, language)
 
-            // Then
-            assertTrue(result is DataResult.Success)
-            assertEquals(expectedDetails, result.data)
+        // Then
+        assertTrue(result is DataResult.Success)
+        assertEquals(expectedDetails, result.data)
 
-            verifySuspend(mode = VerifyMode.exactly(1)) {
-                moviesApi.getMovieDetails(movieId = movieId, language = language)
-            }
+        verifySuspend(mode = VerifyMode.exactly(1)) {
+            moviesApi.getMovieDetails(movieId = movieId, language = language)
         }
+    }
 
     @Test
     fun `getMovieDetails returns failure when api call fails`() = runTest {
@@ -581,7 +579,7 @@ class MoviesRepositoryTest : BaseTest {
         val language = "en-US"
         val dtoEmpty = MovieCreditsResponseDTO.test().copy(
             cast = emptyList(),
-            crew = emptyList()
+            crew = emptyList(),
         )
 
         everySuspend { moviesApi.getMovieCredits(movieId, language) }
@@ -656,10 +654,9 @@ class MoviesRepositoryTest : BaseTest {
 
     private fun MoviesRepository.Companion.test(
         moviesApi: MoviesApi = this@MoviesRepositoryTest.moviesApi,
-        dispatcherProvider: DispatcherProvider = TestDispatchers()
+        dispatcherProvider: DispatcherProvider = TestDispatchers(),
     ) = MoviesRepositoryImpl(
         moviesApi = moviesApi,
-        dispatcherProvider = dispatcherProvider
+        dispatcherProvider = dispatcherProvider,
     )
 }
-

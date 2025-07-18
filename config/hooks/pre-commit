@@ -1,0 +1,23 @@
+#!/bin/sh
+
+echo "Running code validation..."
+
+# Store the files that have been changed
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=d | grep ".kt$")
+
+if [ -z "$STAGED_FILES" ]; then
+    echo "No Kotlin files were modified, skipping validation"
+    exit 0
+fi
+
+# Run the validateCode task
+./gradlew validateCode --daemon --configuration-cache
+
+# Check the exit code
+RESULT=$?
+if [ $RESULT -ne 0 ]; then
+  echo "Code validation failed, please fix the issues before committing"
+  exit 1
+fi
+
+exit 0

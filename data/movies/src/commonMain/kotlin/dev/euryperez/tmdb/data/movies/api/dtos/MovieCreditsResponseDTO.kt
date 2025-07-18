@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 internal data class MovieCreditsResponseDTO(
     val id: Int,
     val cast: List<MovieMemberDTO>,
-    val crew: List<MovieMemberDTO>
+    val crew: List<MovieMemberDTO>,
 )
 
 @Serializable
@@ -30,5 +30,5 @@ internal data class MovieMemberDTO(
     val creditId: String,
     val order: Int?,
     val department: String?,
-    val job: String?
+    val job: String?,
 )

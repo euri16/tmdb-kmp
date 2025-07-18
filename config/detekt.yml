@@ -1,0 +1,121 @@
+complexity:
+  LongParameterList:
+    functionThreshold: 6
+    constructorThreshold: 7
+    ignoreDefaultParameters: true
+  TooManyFunctions:
+    thresholdInFiles: 15
+    thresholdInClasses: 15
+    thresholdInInterfaces: 15
+  NestedBlockDepth:
+    threshold: 4
+  LongMethod:
+    threshold: 60
+  CyclomaticComplexMethod:
+    threshold: 15
+
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    active: true
+  RedundantSuspendModifier:
+    active: true
+  SleepInsteadOfDelay:
+    active: true
+  SuspendFunWithFlowReturnType:
+    active: true
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: true
+    exceptionNames:
+      - Error
+      - Exception
+      - RuntimeException
+      - Throwable
+  TooGenericExceptionThrown:
+    active: true
+    exceptionNames:
+      - Error
+      - Exception
+      - RuntimeException
+      - Throwable
+
+naming:
+  FunctionNaming:
+    active: true
+    ignoreAnnotated: ['Composable']
+  ConstructorParameterNaming:
+    active: true
+  PackageNaming:
+    active: true
+  TopLevelPropertyNaming:
+    active: true
+    constantPattern: '[A-Z][A-Za-z0-9]*'
+  VariableNaming:
+    active: true
+
+performance:
+  active: true
+  SpreadOperator:
+    active: true
+  ArrayPrimitive:
+    active: true
+  ForEachOnRange:
+    active: true
+  CouldBeSequence:
+    active: true
+    threshold: 3
+
+potential-bugs:
+  active: true
+  ElseCaseInsteadOfExhaustiveWhen:
+    active: true
+  ExplicitGarbageCollectionCall:
+    active: true
+  ImplicitUnitReturnType:
+    active: true
+  InvalidRange:
+    active: true
+  UnreachableCode:
+    active: true
+  UnsafeCallOnNullableType:
+    active: true
+  LateinitUsage:
+    active: true
+    ignoreAnnotated: []
+
+style:
+  MaxLineLength:
+    maxLineLength: 120
+  MagicNumber:
+    active: true
+    ignoreNumbers:
+      - '-1'
+      - '0'
+      - '1'
+    ignoreAnnotation: true
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreConstantDeclaration: true
+    ignoreNamedArgument: true
+    ignoreEnums: true
+  ReturnCount:
+    active: true
+    max: 3
+  ThrowsCount:
+    active: true
+    max: 3
+  NewLineAtEndOfFile:
+    active: true
+  OptionalAbstractKeyword:
+    active: true
+  BracesOnWhenStatements:
+    active: true
+  WildcardImport:
+    active: true
+    excludeImports: []
+  UnusedPrivateMember:
+    active: true
+    allowedNames: "(_|ignored|expected|serialVersionUID)"
+    ignoreAnnotated: ["Preview", "Composable"]

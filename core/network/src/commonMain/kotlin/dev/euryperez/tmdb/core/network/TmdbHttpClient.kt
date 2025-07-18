@@ -18,13 +18,12 @@ import co.touchlab.kermit.Logger as KermitLogger
 // TODO: Make this function internal, provide it using Koin or another DI framework
 fun buildHttpClient(
     baseUrl: String = "https://api.themoviedb.org/3/", // TODO: Pull from properties file
-    apiKey: String
+    apiKey: String,
 ) = HttpClient {
     install(Resources)
 
     defaultRequest {
         url(baseUrl)
-
 
         headers {
             append("Accept", "application/json")
