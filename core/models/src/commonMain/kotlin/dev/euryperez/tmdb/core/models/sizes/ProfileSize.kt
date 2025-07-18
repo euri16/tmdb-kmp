@@ -4,5 +4,5 @@ enum class ProfileSize(val value: String) {
     W45("w45"),
     W185("w185"),
     H632("h632"),
-    ORIGINAL("original")
+    ORIGINAL("original"),
 }

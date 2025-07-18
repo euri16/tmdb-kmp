@@ -17,7 +17,7 @@ object NetworkTestFactory {
     fun httpClient(
         baseUrl: String = "https://api.themoviedb.org/3/",
         apiKey: String = "test_api_key",
-        engine: HttpClientEngine = MockEngine.test()
+        engine: HttpClientEngine = MockEngine.test(),
     ): HttpClient {
         return HttpClient(engine) {
             install(Resources)

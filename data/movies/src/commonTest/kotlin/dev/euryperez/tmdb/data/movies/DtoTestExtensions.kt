@@ -38,19 +38,19 @@ internal fun MovieDTO.Companion.test(
     adult = adult,
     originalLanguage = originalLanguage,
     originalTitle = originalTitle,
-    video = video
+    video = video,
 )
 
 internal fun MovieListResponseDTO.Companion.test(
     page: Int = 1,
     movies: List<MovieDTO> = listOf(MovieDTO.test()),
     totalPages: Int = 1,
-    totalResults: Int = movies.size
+    totalResults: Int = movies.size,
 ) = MovieListResponseDTO(
     page = page,
     results = movies,
     totalPages = totalPages,
-    totalResults = totalResults
+    totalResults = totalResults,
 )
 
 internal fun UpcomingMoviesResponseDTO.Companion.test(
@@ -58,7 +58,7 @@ internal fun UpcomingMoviesResponseDTO.Companion.test(
     movies: List<MovieDTO> = listOf(MovieDTO.test()),
     totalPages: Int = 1,
     totalResults: Int = movies.size,
-    dates: DatesDTO = DatesDTO.test()
+    dates: DatesDTO = DatesDTO.test(),
 ) = UpcomingMoviesResponseDTO(
     page = page,
     results = movies,
@@ -67,12 +67,9 @@ internal fun UpcomingMoviesResponseDTO.Companion.test(
     dates = dates,
 )
 
-internal fun DatesDTO.Companion.test(
-    maximum: String = "2023-12-31",
-    minimum: String = "2023-01-01"
-) = DatesDTO(
+internal fun DatesDTO.Companion.test(maximum: String = "2023-12-31", minimum: String = "2023-01-01") = DatesDTO(
     maximum = maximum,
-    minimum = minimum
+    minimum = minimum,
 )
 
 internal fun MovieDetailsDTO.Companion.test(): MovieDetailsDTO = MovieDetailsDTO(
@@ -95,13 +92,10 @@ internal fun MovieDetailsDTO.Companion.test(): MovieDetailsDTO = MovieDetailsDTO
     revenue = 1337,
     runtime = 113,
     budget = 4242,
-    homepage = "https://example.com/the-answer"
+    homepage = "https://example.com/the-answer",
 )
 
-internal fun GenreDTO.Companion.test(
-    id: Int = 14,
-    name: String = "Sci‑Fi"
-) = GenreDTO(id, name)
+internal fun GenreDTO.Companion.test(id: Int = 14, name: String = "Sci‑Fi") = GenreDTO(id, name)
 
 internal fun MovieMemberDTO.Companion.test(
     id: Int = 1,
@@ -116,7 +110,7 @@ internal fun MovieMemberDTO.Companion.test(
     order: Int? = 0,
     department: String? = null,
     job: String? = null,
-    adult: Boolean = false
+    adult: Boolean = false,
 ): MovieMemberDTO = MovieMemberDTO(
     adult = adult,
     gender = gender,
@@ -131,15 +125,15 @@ internal fun MovieMemberDTO.Companion.test(
     creditId = creditId,
     order = order,
     department = department,
-    job = job
+    job = job,
 )
 
 internal fun MovieCreditsResponseDTO.Companion.test(
     id: Int = 42,
     cast: List<MovieMemberDTO> = listOf(MovieMemberDTO.test()),
-    crew: List<MovieMemberDTO> = listOf(MovieMemberDTO.test())
+    crew: List<MovieMemberDTO> = listOf(MovieMemberDTO.test()),
 ): MovieCreditsResponseDTO = MovieCreditsResponseDTO(
     id = id,
     cast = cast,
-    crew = crew
+    crew = crew,
 )

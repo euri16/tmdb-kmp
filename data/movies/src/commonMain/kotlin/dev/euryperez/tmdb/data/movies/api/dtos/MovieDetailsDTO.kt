@@ -39,18 +39,18 @@ internal data class MovieDetailsDTO(
 @Serializable
 internal data class ProductionCompanyDTO(
     val id: Int,
-    val name: String
+    val name: String,
 )
 
 @Serializable
 internal data class ProductionCountryDTO(
     @SerialName("iso_3166_1")
     val isoCode: String,
-    val name: String
+    val name: String,
 )
 
 @Serializable
 internal data class GenreDTO(
     val id: Int,
-    val name: String
+    val name: String,
 )

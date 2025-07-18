@@ -7,33 +7,21 @@ import dev.euryperez.tmdb.data.common.models.DataResult
 import dev.euryperez.tmdb.data.movies.api.MoviesApi
 
 interface MoviesRepository {
-    suspend fun getPopularMovies(
-        page: Int = 1,
-        language: String = "en-US"
-    ): DataResult<List<TmdbMovie>>
+    suspend fun getPopularMovies(page: Int = 1, language: String = "en-US"): DataResult<List<TmdbMovie>>
 
-    suspend fun getUpcomingMovies(
-        page: Int = 1,
-        language: String = "en-US"
-    ): DataResult<List<TmdbMovie>>
+    suspend fun getUpcomingMovies(page: Int = 1, language: String = "en-US"): DataResult<List<TmdbMovie>>
 
-    suspend fun getMovieDetails(
-        movieId: Int,
-        language: String = "en-US"
-    ): DataResult<TmdbMovieDetails>
+    suspend fun getMovieDetails(movieId: Int, language: String = "en-US"): DataResult<TmdbMovieDetails>
 
     // TODO: Move to the :data:search module
     suspend fun searchMovies(
         query: String,
         page: Int = 1,
         language: String = "en-US",
-        year: Int? = null
+        year: Int? = null,
     ): DataResult<List<TmdbMovie>>
 
-    suspend fun getMovieCredits(
-        movieId: Int,
-        language: String = "en-US"
-    ): DataResult<TmdbMovieCredits>
+    suspend fun getMovieCredits(movieId: Int, language: String = "en-US"): DataResult<TmdbMovieCredits>
 
     companion object {
         private var instance: MoviesRepository? = null
