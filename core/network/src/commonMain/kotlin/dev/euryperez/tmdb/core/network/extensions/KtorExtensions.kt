@@ -3,19 +3,16 @@ package dev.euryperez.tmdb.core.network.extensions
 import dev.euryperez.tmdb.core.network.models.ApiResult
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.ServerResponseException
-import io.ktor.client.statement.HttpResponse
+import io.ktor.client.plugins.resources.get
 import io.ktor.serialization.JsonConvertException
 import io.ktor.utils.io.CancellationException
 import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 
-suspend inline fun <reified T> HttpClient.safeCall(
-    crossinline block: suspend HttpClient.() -> HttpResponse
+suspend inline fun <reified R : Any, reified T> HttpClient.getAsApiResult(
+    resource: R
 ): ApiResult<T> = try {
-    val response = this.block()
-
+    val response = get(resource)
     when (response.status.value) {
         in 200..299 -> {
             try {
