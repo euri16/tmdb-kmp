@@ -25,7 +25,6 @@ fun buildHttpClient(
     defaultRequest {
         url(baseUrl)
 
-
         headers {
             append("Accept", "application/json")
             append("Authorization", "bearer $apiKey")
