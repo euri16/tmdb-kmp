@@ -62,7 +62,6 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
 
-
                 api(libs.ktor.client.core)
                 api(libs.ktor.client.resources)
                 implementation(libs.ktor.client.content.negotiation)
@@ -104,5 +103,4 @@ kotlin {
             }
         }
     }
-
 }

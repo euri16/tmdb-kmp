@@ -10,7 +10,7 @@ internal data class MovieListResponseDTO(
     @SerialName("total_pages")
     val totalPages: Int,
     @SerialName("total_results")
-    val totalResults: Int
+    val totalResults: Int,
 ) {
     companion object
 }

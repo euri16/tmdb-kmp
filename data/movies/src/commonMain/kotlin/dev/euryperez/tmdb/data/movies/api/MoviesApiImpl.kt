@@ -1,13 +1,13 @@
 package dev.euryperez.tmdb.data.movies.api
 
 import dev.euryperez.tmdb.core.network.extensions.getAsApiResult
+import dev.euryperez.tmdb.core.network.models.ApiResult
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieCreditsResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.UpcomingMoviesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.resources.MovieResource
 import dev.euryperez.tmdb.data.movies.api.resources.SearchResource
-import dev.euryperez.tmdb.core.network.models.ApiResult
 import io.ktor.client.HttpClient
 
 internal class MoviesApiImpl(val httpClient: HttpClient) : MoviesApi {
@@ -43,7 +43,7 @@ internal class MoviesApiImpl(val httpClient: HttpClient) : MoviesApi {
         query: String,
         page: Int,
         language: String,
-        year: Int?
+        year: Int?,
     ): ApiResult<MovieListResponseDTO> {
         return httpClient.getAsApiResult(
             SearchResource.MovieResource(

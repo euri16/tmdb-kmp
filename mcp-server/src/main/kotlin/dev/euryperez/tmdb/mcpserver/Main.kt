@@ -17,9 +17,9 @@ fun main() {
 //        }.onFailure {
 //            println("Error fetching popular movies: $it")
 //        }
-        //moviesRepository.getUpcomingMovies().onSuccess { println(it) }
-        //moviesRepository.getMovieDetails(603).onSuccess { println(it) }
-        //moviesRepository.searchMovies("Ferrari").onSuccess { println(it) }
-        //moviesRepository.getMovieCredits(603).onSuccess { println(it) }
+        // moviesRepository.getUpcomingMovies().onSuccess { println(it) }
+        // moviesRepository.getMovieDetails(603).onSuccess { println(it) }
+        // moviesRepository.searchMovies("Ferrari").onSuccess { println(it) }
+        // moviesRepository.getMovieCredits(603).onSuccess { println(it) }
     }
 }

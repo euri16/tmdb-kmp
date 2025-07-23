@@ -10,6 +10,6 @@ class SearchResource {
         val query: String,
         val page: Int = 1,
         val language: String = "en-US",
-        val year: Int? = null
+        val year: Int? = null,
     )
 }

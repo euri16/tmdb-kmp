@@ -8,7 +8,7 @@ internal class MovieResource {
     class Id(
         val parent: MovieResource = MovieResource(),
         val movieId: Int,
-        val language: String = "en-US"
+        val language: String = "en-US",
     ) {
         @Resource("credits")
         class Credits(val parent: Id, val language: String = "en-US")
@@ -18,13 +18,13 @@ internal class MovieResource {
     class Popular(
         val parent: MovieResource = MovieResource(),
         val page: Int = 1,
-        val language: String = "en-US"
+        val language: String = "en-US",
     )
 
     @Resource("upcoming")
     class Upcoming(
         val parent: MovieResource = MovieResource(),
         val page: Int = 1,
-        val language: String = "en-US"
+        val language: String = "en-US",
     )
 }
