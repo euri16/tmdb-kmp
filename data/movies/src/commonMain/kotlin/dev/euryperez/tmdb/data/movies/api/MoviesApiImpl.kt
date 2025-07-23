@@ -11,30 +11,21 @@ import dev.euryperez.tmdb.data.movies.api.resources.SearchResource
 import io.ktor.client.HttpClient
 
 internal class MoviesApiImpl(val httpClient: HttpClient) : MoviesApi {
-    override suspend fun getPopularMovies(
-        page: Int,
-        language: String
-    ): ApiResult<MovieListResponseDTO> {
+    override suspend fun getPopularMovies(page: Int, language: String): ApiResult<MovieListResponseDTO> {
         return httpClient.getAsApiResult(
-            MovieResource.Popular(page = page, language = language)
+            MovieResource.Popular(page = page, language = language),
         )
     }
 
-    override suspend fun getUpcomingMovies(
-        page: Int,
-        language: String
-    ): ApiResult<UpcomingMoviesResponseDTO> {
+    override suspend fun getUpcomingMovies(page: Int, language: String): ApiResult<UpcomingMoviesResponseDTO> {
         return httpClient.getAsApiResult(
-            MovieResource.Upcoming(page = page, language = language)
+            MovieResource.Upcoming(page = page, language = language),
         )
     }
 
-    override suspend fun getMovieDetails(
-        movieId: Int,
-        language: String
-    ): ApiResult<MovieDetailsDTO> {
+    override suspend fun getMovieDetails(movieId: Int, language: String): ApiResult<MovieDetailsDTO> {
         return httpClient.getAsApiResult(
-            MovieResource.Id(movieId = movieId, language = language)
+            MovieResource.Id(movieId = movieId, language = language),
         )
     }
 
@@ -50,20 +41,17 @@ internal class MoviesApiImpl(val httpClient: HttpClient) : MoviesApi {
                 query = query,
                 page = page,
                 language = language,
-                year = year
-            )
+                year = year,
+            ),
         )
     }
 
-    override suspend fun getMovieCredits(
-        movieId: Int,
-        language: String
-    ): ApiResult<MovieCreditsResponseDTO> {
+    override suspend fun getMovieCredits(movieId: Int, language: String): ApiResult<MovieCreditsResponseDTO> {
         return httpClient.getAsApiResult(
             MovieResource.Id.Credits(
                 parent = MovieResource.Id(movieId = movieId, language = language),
-                language = language
-            )
+                language = language,
+            ),
         )
     }
 

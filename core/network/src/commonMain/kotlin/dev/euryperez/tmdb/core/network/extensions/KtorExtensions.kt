@@ -9,9 +9,7 @@ import io.ktor.utils.io.CancellationException
 import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
 
-suspend inline fun <reified R : Any, reified T> HttpClient.getAsApiResult(
-    resource: R
-): ApiResult<T> = try {
+suspend inline fun <reified R : Any, reified T> HttpClient.getAsApiResult(resource: R): ApiResult<T> = try {
     val response = get(resource)
     when (response.status.value) {
         in 200..299 -> {
