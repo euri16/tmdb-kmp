@@ -9,10 +9,7 @@ sealed interface DataResult<out T> {
         is Success -> Success(mapper(data))
     }
 
-    fun <R> fold(
-        onSuccess: (T) -> R,
-        onFailure: (String?) -> R
-    ): R {
+    fun <R> fold(onSuccess: (T) -> R, onFailure: (String?) -> R): R {
         return when (this) {
             is Success -> onSuccess(data)
             is Failure -> onFailure(message)

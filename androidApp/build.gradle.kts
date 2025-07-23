@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
-
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)

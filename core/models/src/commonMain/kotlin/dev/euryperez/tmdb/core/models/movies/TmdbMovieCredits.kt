@@ -7,7 +7,7 @@ import dev.euryperez.tmdb.core.models.sizes.ProfileSize
 data class TmdbMovieCredits(
     val id: Int,
     val cast: List<TmdbMember>,
-    val crew: List<TmdbMember>
+    val crew: List<TmdbMember>,
 ) {
     companion object
 }
@@ -26,7 +26,7 @@ data class TmdbMember(
     val creditId: String,
     val order: Int?,
     val department: String?,
-    val job: String?
+    val job: String?,
 ) {
     val profilePictureUrl: String?
         get() = profilePath?.let { "${TmdbConstants.IMAGE_BASE_URL}original$it" }

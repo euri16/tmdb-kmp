@@ -14,23 +14,14 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonObject
 
-fun Server.addSearchMoviesTool(
-    searchMovies: suspend (
-        query: String,
-        page: Int,
-        language: String,
-        year: Int?
-    ) -> DataResult<List<TmdbMovie>>,
+fun Server.addUpcomingMoviesTool(
+    getUpcomingMovies: suspend (page: Int, language: String) -> DataResult<List<TmdbMovie>>,
 ) {
     addTool(
-        name = "search_movies",
-        description = "Search for movies by query",
+        name = "get_upcoming_movies",
+        description = "Retrieves a list of upcoming movies from the TMDB API.",
         inputSchema = Tool.Input(
             properties = buildJsonObject {
-                putJsonObject("query") {
-                    put("type", "string")
-                    put("description", "The query to search for")
-                }
                 putJsonObject("page") {
                     put("type", "number")
                     put("description", "The page number to retrieve.")
@@ -39,50 +30,36 @@ fun Server.addSearchMoviesTool(
                     put("type", "string")
                     put("description", "The language to retrieve the movies in. e.g. en-US")
                 }
-                putJsonObject("year") {
-                    put("type", "number")
-                    put("description", "The year to retrieve the movies from.")
-                }
             },
-            required = listOf("query", "page", "language")
-        )
+            required = listOf("page", "language"),
+        ),
     ) { request ->
         val page = request.arguments["page"]?.jsonPrimitive?.intOrNull
-        val year = request.arguments["year"]?.jsonPrimitive?.intOrNull
-        val query = request.arguments["query"]?.jsonPrimitive?.contentOrNull
         val language = request.arguments["language"]?.jsonPrimitive?.contentOrNull
-
-        if (query == null) {
-            return@addTool CallToolResult(
-                content = listOf(TextContent("The 'query' parameter is required."))
-            )
-        }
 
         if (page == null) {
             return@addTool CallToolResult(
-                content = listOf(TextContent("The 'page' parameter is required."))
+                content = listOf(TextContent("The 'page' parameter is required.")),
             )
         }
 
         if (language == null) {
             return@addTool CallToolResult(
-                content = listOf(TextContent("The 'language' parameter is required."))
+                content = listOf(TextContent("The 'language' parameter is required.")),
             )
         }
 
-        searchMovies(query, page, language, year).fold(
-            onSuccess = { movies ->
+        getUpcomingMovies(page, language).fold(
+            onSuccess = { popularMovies ->
                 CallToolResult(
-                    content = movies.map {
+                    content = popularMovies.map {
                         TextContent(text = Json.Default.encodeToString(it))
-                    }
+                    },
                 )
             },
             onFailure = {
-                CallToolResult(
-                    content = listOf(TextContent(text = it ?: "Unknown error"))
-                )
-            }
+                CallToolResult(content = listOf(TextContent(text = it ?: "Unknown error")))
+            },
         )
     }
 }

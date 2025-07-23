@@ -1,12 +1,12 @@
 package dev.euryperez.tmdb.data.movies.api
 
+import dev.euryperez.tmdb.core.network.models.ApiResult
 import dev.euryperez.tmdb.core.test.BaseTest
+import dev.euryperez.tmdb.core.test.extensions.test
 import dev.euryperez.tmdb.core.test.factory.NetworkTestFactory
 import dev.euryperez.tmdb.core.test.rules.MainCoroutineRule
-import dev.euryperez.tmdb.core.network.models.ApiResult
-import dev.euryperez.tmdb.core.test.extensions.test
-import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.request.HttpRequestData
@@ -79,7 +79,7 @@ class MoviesApiTest : BaseTest {
 
                 assertEquals("1", request.url.parameters["page"])
                 assertEquals("en-US", request.url.parameters["language"])
-            }
+            },
         ).buildMoviesApi()
 
         // When
@@ -105,9 +105,9 @@ class MoviesApiTest : BaseTest {
                     adult = false,
                     originalLanguage = "en",
                     originalTitle = "Test Movie",
-                    video = false
-                )
-            )
+                    video = false,
+                ),
+            ),
         )
 
         assertTrue(result is ApiResult.Success)
@@ -132,7 +132,7 @@ class MoviesApiTest : BaseTest {
             onRequest = { request: HttpRequestData ->
                 assertEquals("2", request.url.parameters["page"])
                 assertEquals("es-ES", request.url.parameters["language"])
-            }
+            },
         ).buildMoviesApi()
 
         // When
@@ -152,7 +152,7 @@ class MoviesApiTest : BaseTest {
         val moviesApi = MockEngine.test(
             path = "/movie/popular",
             expectedResponse = test401Response,
-            expectedStatusCode = HttpStatusCode.Unauthorized
+            expectedStatusCode = HttpStatusCode.Unauthorized,
         ).buildMoviesApi()
 
         // When
@@ -177,7 +177,7 @@ class MoviesApiTest : BaseTest {
         val moviesApi = MockEngine.test(
             path = "/movie/popular",
             expectedResponse = test404Response,
-            expectedStatusCode = HttpStatusCode.NotFound
+            expectedStatusCode = HttpStatusCode.NotFound,
         ).buildMoviesApi()
 
         // When
@@ -197,7 +197,7 @@ class MoviesApiTest : BaseTest {
         val moviesApi = MockEngine.test(
             path = "/movie/popular",
             expectedResponse = test500Response,
-            expectedStatusCode = HttpStatusCode.InternalServerError
+            expectedStatusCode = HttpStatusCode.InternalServerError,
         ).buildMoviesApi()
 
         // When
@@ -213,7 +213,7 @@ class MoviesApiTest : BaseTest {
     fun `getPopularMovies returns NetworkError when IOException occurs`() = runTest {
         // Given
         val moviesApi = MockEngine.test(
-            throwable = IOException("Network connection failed")
+            throwable = IOException("Network connection failed"),
         ).buildMoviesApi()
 
         // When
@@ -231,7 +231,7 @@ class MoviesApiTest : BaseTest {
             path = "/movie/popular",
             expectedResponse = """{"invalid": "json structure", "missing": "required fields"}""",
             expectedStatusCode = HttpStatusCode.OK,
-            headers = headersOf(HttpHeaders.ContentType, "application/json")
+            headers = headersOf(HttpHeaders.ContentType, "application/json"),
         ).buildMoviesApi()
 
         // When
@@ -242,14 +242,11 @@ class MoviesApiTest : BaseTest {
         assertTrue(result.message?.contains("serial")!!)
     }
 
-    private fun HttpClientEngine.buildMoviesApi(
-        baseUrl: String = testBaseUrl,
-        apiKey: String = testApiKey
-    ): MoviesApi {
+    private fun HttpClientEngine.buildMoviesApi(baseUrl: String = testBaseUrl, apiKey: String = testApiKey): MoviesApi {
         return NetworkTestFactory.httpClient(
             baseUrl = baseUrl,
             apiKey = apiKey,
-            engine = this
+            engine = this,
         ).let { MoviesApiImpl(it) }
     }
 }
