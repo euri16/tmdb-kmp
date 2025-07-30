@@ -5,8 +5,10 @@ import dev.euryperez.tmdb.core.test.BaseTest
 import dev.euryperez.tmdb.core.test.extensions.test
 import dev.euryperez.tmdb.core.test.factory.NetworkTestFactory
 import dev.euryperez.tmdb.core.test.rules.MainCoroutineRule
+import dev.euryperez.tmdb.data.movies.api.dtos.DatesDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.NowPlayingMoviesResponseDTO
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.request.HttpRequestData
@@ -240,6 +242,121 @@ class MoviesApiTest : BaseTest {
         // Then
         assertTrue(result is ApiResult.Error.SerializationError)
         assertTrue(result.message?.contains("serial")!!)
+    }
+
+    @Test
+    fun `getNowPlayingMovies returns success when API call succeeds`() = runTest {
+        // Given
+        val expectedResponse = """
+            {
+                "page": 1,
+                "results": [
+                    {
+                        "id": 2,
+                        "title": "Now Playing Movie",
+                        "overview": "A currently playing movie",
+                        "poster_path": "/now_playing_poster.jpg",
+                        "backdrop_path": "/now_playing_backdrop.jpg",
+                        "release_date": "2024-01-20",
+                        "vote_average": 8.0,
+                        "vote_count": 1500,
+                        "popularity": 9.0,
+                        "genre_ids": [28, 53],
+                        "adult": false,
+                        "original_language": "en",
+                        "original_title": "Now Playing Movie",
+                        "video": false
+                    }
+                ],
+                "total_pages": 5,
+                "total_results": 50,
+                "dates": {
+                    "maximum": "2024-02-15",
+                    "minimum": "2024-01-01"
+                }
+            }
+        """.trimIndent()
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/now_playing",
+            expectedResponse = expectedResponse,
+            onRequest = { request: HttpRequestData ->
+                assertEquals("application/json", request.headers["Accept"])
+                assertEquals("bearer $testApiKey", request.headers["Authorization"])
+                assertEquals("application/json", request.headers["Content-Type"])
+
+                assertEquals("1", request.url.parameters["page"])
+                assertEquals("en-US", request.url.parameters["language"])
+            },
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getNowPlayingMovies(page = 1, language = "en-US")
+
+        // Then
+        val expectedNowPlayingMoviesResponseDTO = NowPlayingMoviesResponseDTO(
+            page = 1,
+            totalPages = 5,
+            totalResults = 50,
+            results = listOf(
+                MovieDTO(
+                    id = 2,
+                    title = "Now Playing Movie",
+                    overview = "A currently playing movie",
+                    posterPath = "/now_playing_poster.jpg",
+                    backdropPath = "/now_playing_backdrop.jpg",
+                    releaseDate = "2024-01-20",
+                    voteAverage = 8.0,
+                    voteCount = 1500,
+                    popularity = 9.0,
+                    genreIds = listOf(28, 53),
+                    adult = false,
+                    originalLanguage = "en",
+                    originalTitle = "Now Playing Movie",
+                    video = false,
+                ),
+            ),
+            dates = DatesDTO(maximum = "2024-02-15", minimum = "2024-01-01"),
+        )
+
+        assertTrue(result is ApiResult.Success)
+        assertEquals(expectedNowPlayingMoviesResponseDTO, result.data)
+    }
+
+    @Test
+    fun `getNowPlayingMovies returns success with custom parameters`() = runTest {
+        // Given
+        val expectedResponse = """
+            {
+                "page": 3,
+                "results": [],
+                "total_pages": 8,
+                "total_results": 80,
+                "dates": {
+                    "maximum": "2024-02-20",
+                    "minimum": "2024-01-05"
+                }
+            }
+        """.trimIndent()
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/now_playing",
+            expectedResponse = expectedResponse,
+            onRequest = { request: HttpRequestData ->
+                assertEquals("3", request.url.parameters["page"])
+                assertEquals("fr-FR", request.url.parameters["language"])
+            },
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getNowPlayingMovies(page = 3, language = "fr-FR")
+
+        // Then
+        assertTrue(result is ApiResult.Success)
+        assertEquals(3, result.data.page)
+        assertEquals(8, result.data.totalPages)
+        assertEquals("2024-02-20", result.data.dates.maximum)
+        assertEquals("2024-01-05", result.data.dates.minimum)
     }
 
     private fun HttpClientEngine.buildMoviesApi(baseUrl: String = testBaseUrl, apiKey: String = testApiKey): MoviesApi {

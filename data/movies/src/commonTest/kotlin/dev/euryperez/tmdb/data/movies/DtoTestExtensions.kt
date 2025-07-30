@@ -7,6 +7,7 @@ import dev.euryperez.tmdb.data.movies.api.dtos.MovieDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieMemberDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.NowPlayingMoviesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.UpcomingMoviesResponseDTO
 
 internal fun MovieDTO.Companion.test(
@@ -60,6 +61,20 @@ internal fun UpcomingMoviesResponseDTO.Companion.test(
     totalResults: Int = movies.size,
     dates: DatesDTO = DatesDTO.test(),
 ) = UpcomingMoviesResponseDTO(
+    page = page,
+    results = movies,
+    totalPages = totalPages,
+    totalResults = totalResults,
+    dates = dates,
+)
+
+internal fun NowPlayingMoviesResponseDTO.Companion.test(
+    page: Int = 1,
+    movies: List<MovieDTO> = listOf(MovieDTO.test()),
+    totalPages: Int = 1,
+    totalResults: Int = movies.size,
+    dates: DatesDTO = DatesDTO.test(),
+) = NowPlayingMoviesResponseDTO(
     page = page,
     results = movies,
     totalPages = totalPages,

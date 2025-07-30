@@ -5,6 +5,7 @@ import dev.euryperez.tmdb.core.network.models.ApiResult
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieCreditsResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.NowPlayingMoviesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.UpcomingMoviesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.resources.MovieResource
 import dev.euryperez.tmdb.data.movies.api.resources.SearchResource
@@ -20,6 +21,12 @@ internal class MoviesApiImpl(val httpClient: HttpClient) : MoviesApi {
     override suspend fun getUpcomingMovies(page: Int, language: String): ApiResult<UpcomingMoviesResponseDTO> {
         return httpClient.getAsApiResult(
             MovieResource.Upcoming(page = page, language = language),
+        )
+    }
+
+    override suspend fun getNowPlayingMovies(page: Int, language: String): ApiResult<NowPlayingMoviesResponseDTO> {
+        return httpClient.getAsApiResult(
+            MovieResource.NowPlaying(page = page, language = language),
         )
     }
 
