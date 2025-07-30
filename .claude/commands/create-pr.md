@@ -1,9 +1,13 @@
 Create a PR against this branch: $ARGUMENTS.
 
+Before, run these commands to ensure your SSH key is set up correctly:
+
+1. eval "$(ssh-agent -s)" && ssh -T git@github-personal
+
 Follow these steps:
 
 1. ALWAYS start by running git status to check what branch you're on
-2. Use this template: `gh pr create --base develop --head <branch_name> --title "clear, detailed
+2. Use this template: `gh pr create --base develop --head <current_branch_name> --title "clear, detailed
 description of changes" --body "clear, detailed description of changes"`
 3. Always create Pull Requests against the branch the user specifies (or default to develop branch).
 NEVER EVER AGAINST main
