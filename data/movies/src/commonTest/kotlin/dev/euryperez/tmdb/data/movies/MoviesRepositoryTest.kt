@@ -14,6 +14,7 @@ import dev.euryperez.tmdb.data.movies.api.dtos.MovieCreditsResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.NowPlayingMoviesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.UpcomingMoviesResponseDTO
 import dev.euryperez.tmdb.data.movies.mappers.toDomain
 import dev.mokkery.answering.returns
@@ -325,6 +326,111 @@ class MoviesRepositoryTest : BaseTest {
         // Then
         verifySuspend(mode = VerifyMode.exactly(1)) {
             moviesApi.getUpcomingMovies(page = 3, language = "fr-FR")
+        }
+    }
+
+    @Test
+    fun `getNowPlayingMovies returns success with mapped movies when api call succeeds`() = runTest {
+        // Given
+        val page = 1
+        val language = "en-US"
+        val expectedMovies = listOf(
+            TmdbMovie(
+                id = 1,
+                title = "Test Movie",
+                overview = "Test overview",
+                posterPath = "/test-poster.jpg",
+                backdropPath = "/test-backdrop.jpg",
+                releaseDate = LocalDate(2023, 5, 2),
+                voteAverage = 8.5,
+                voteCount = 1000,
+                popularity = 100.0,
+                genreIds = listOf(28, 12),
+                adult = false,
+                originalLanguage = "en",
+                originalTitle = "Test Movie",
+                video = false,
+            ),
+        )
+
+        everySuspend {
+            moviesApi.getNowPlayingMovies(page = page, language = language)
+        } returns ApiResult.Success(NowPlayingMoviesResponseDTO.test())
+
+        // When
+        val result = MoviesRepository.test().getNowPlayingMovies(page, language)
+
+        // Then
+        assertTrue(result is DataResult.Success)
+        assertEquals(expectedMovies.size, result.data.size)
+        assertEquals(expectedMovies, result.data)
+
+        verifySuspend(mode = VerifyMode.exactly(1)) {
+            moviesApi.getNowPlayingMovies(page = page, language = language)
+        }
+    }
+
+    @Test
+    fun `getNowPlayingMovies returns failure when api call fails`() = runTest {
+        // Given
+        val page = 1
+        val language = "en-US"
+        val errorMessage = "Network error"
+
+        everySuspend {
+            moviesApi.getNowPlayingMovies(page = page, language = language)
+        } returns ApiResult.Error.HttpError(401, errorMessage)
+
+        // When
+        val result = MoviesRepository.test().getNowPlayingMovies(page, language)
+
+        // Then
+        assertTrue(result is DataResult.Failure)
+        assertEquals(errorMessage, result.message)
+
+        verifySuspend(mode = VerifyMode.exactly(1)) {
+            moviesApi.getNowPlayingMovies(page = page, language = language)
+        }
+    }
+
+    @Test
+    fun `getNowPlayingMovies returns empty list when api returns empty results`() = runTest {
+        // Given
+        val page = 1
+        val language = "en-US"
+
+        everySuspend {
+            moviesApi.getNowPlayingMovies(page = page, language = language)
+        } returns ApiResult.Success(NowPlayingMoviesResponseDTO.test(movies = emptyList()))
+
+        // When
+        val result = MoviesRepository.test().getNowPlayingMovies(page, language)
+
+        // Then
+        assertTrue(result is DataResult.Success)
+        assertTrue(result.data.isEmpty())
+
+        verifySuspend(mode = VerifyMode.exactly(1)) {
+            moviesApi.getNowPlayingMovies(page = page, language = language)
+        }
+    }
+
+    @Test
+    fun `getNowPlayingMovies passes correct parameters to api`() = runTest {
+        // Given
+        val page = 2
+        val language = "fr-FR"
+
+        everySuspend {
+            moviesApi.getNowPlayingMovies(page = page, language = language)
+        } returns ApiResult.Success(NowPlayingMoviesResponseDTO.test(movies = emptyList()))
+
+        // When
+        MoviesRepository.test().getNowPlayingMovies(page, language)
+
+        // Then
+        verifySuspend(mode = VerifyMode.exactly(1)) {
+            moviesApi.getNowPlayingMovies(page = 2, language = "fr-FR")
         }
     }
 

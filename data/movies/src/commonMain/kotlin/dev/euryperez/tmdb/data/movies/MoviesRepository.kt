@@ -11,6 +11,8 @@ interface MoviesRepository {
 
     suspend fun getUpcomingMovies(page: Int = 1, language: String = "en-US"): DataResult<List<TmdbMovie>>
 
+    suspend fun getNowPlayingMovies(page: Int = 1, language: String = "en-US"): DataResult<List<TmdbMovie>>
+
     suspend fun getMovieDetails(movieId: Int, language: String = "en-US"): DataResult<TmdbMovieDetails>
 
     // TODO: Move to the :data:search module

@@ -17,7 +17,6 @@ junit = "1.2.1"
 mcp = "0.5.0"
 jetbrainsKotlinJvm = "2.2.0"
 shadowGradlePlugin = "8.1.1"
-mockk = "1.14.4"
 spotless = "7.1.0"
 turbine = "1.2.1"
 mokkery = "2.9.0"
@@ -54,7 +53,6 @@ touchlab-kermit = { module = "co.touchlab:kermit", version.ref="kermit" }
 # testing
 test-kotlin = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 test-kotlin-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin" }
-test-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 test-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 test-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
 test-ktor-client = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }

@@ -27,4 +27,11 @@ internal class MovieResource {
         val page: Int = 1,
         val language: String = "en-US",
     )
+
+    @Resource("now_playing")
+    class NowPlaying(
+        val parent: MovieResource = MovieResource(),
+        val page: Int = 1,
+        val language: String = "en-US",
+    )
 }

@@ -5,12 +5,15 @@ import dev.euryperez.tmdb.core.network.models.ApiResult
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieCreditsResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.NowPlayingMoviesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.UpcomingMoviesResponseDTO
 
 internal interface MoviesApi {
     suspend fun getPopularMovies(page: Int = 1, language: String = "en-US"): ApiResult<MovieListResponseDTO>
 
     suspend fun getUpcomingMovies(page: Int = 1, language: String = "en-US"): ApiResult<UpcomingMoviesResponseDTO>
+
+    suspend fun getNowPlayingMovies(page: Int = 1, language: String = "en-US"): ApiResult<NowPlayingMoviesResponseDTO>
 
     suspend fun getMovieDetails(movieId: Int, language: String = "en-US"): ApiResult<MovieDetailsDTO>
 
