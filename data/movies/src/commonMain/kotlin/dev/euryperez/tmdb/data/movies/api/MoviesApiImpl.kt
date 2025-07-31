@@ -2,6 +2,7 @@ package dev.euryperez.tmdb.data.movies.api
 
 import dev.euryperez.tmdb.core.network.extensions.getAsApiResult
 import dev.euryperez.tmdb.core.network.models.ApiResult
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieAlternativeTitlesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieCreditsResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
@@ -64,6 +65,14 @@ internal class MoviesApiImpl(val httpClient: HttpClient) : MoviesApi {
             MovieResource.Id.Credits(
                 parent = MovieResource.Id(movieId = movieId, language = language),
                 language = language,
+            ),
+        )
+    }
+
+    override suspend fun getMovieAlternativeTitles(movieId: Int): ApiResult<MovieAlternativeTitlesResponseDTO> {
+        return httpClient.getAsApiResult(
+            MovieResource.Id.AlternativeTitles(
+                parent = MovieResource.Id(movieId = movieId),
             ),
         )
     }

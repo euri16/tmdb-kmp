@@ -5,7 +5,9 @@ import dev.euryperez.tmdb.core.test.BaseTest
 import dev.euryperez.tmdb.core.test.extensions.test
 import dev.euryperez.tmdb.core.test.factory.NetworkTestFactory
 import dev.euryperez.tmdb.core.test.rules.MainCoroutineRule
+import dev.euryperez.tmdb.data.movies.api.dtos.AlternativeTitleDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.DatesDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieAlternativeTitlesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.NowPlayingMoviesResponseDTO
@@ -665,6 +667,221 @@ class MoviesApiTest : BaseTest {
 
         // When
         val result = moviesApi.getTopRatedMovies(page = 1, language = "en-US")
+
+        // Then
+        assertTrue(result is ApiResult.Error.SerializationError)
+        assertTrue(result.message?.contains("serial")!!)
+    }
+
+    // =========================
+    // getMovieAlternativeTitles Tests
+    // =========================
+
+    @Test
+    fun `getMovieAlternativeTitles returns success when API call succeeds`() = runTest {
+        // Given
+        val movieId = 550
+        val expectedResponse = """
+            {
+                "id": 550,
+                "titles": [
+                    {
+                        "iso_3166_1": "US",
+                        "title": "Fight Club",
+                        "type": "Original Title"
+                    },
+                    {
+                        "iso_3166_1": "ES",
+                        "title": "El club de la lucha"
+                    },
+                    {
+                        "iso_3166_1": "FR",
+                        "title": "Fight Club"
+                    },
+                    {
+                        "iso_3166_1": "IT",
+                        "title": "Fight Club - Finché non sai"
+                    },
+                    {
+                        "iso_3166_1": "DE",
+                        "title": "Fight Club",
+                        "type": "Theatrical Title"
+                    }
+                ]
+            }
+        """.trimIndent()
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/$movieId/alternative_titles",
+            expectedResponse = expectedResponse,
+            onRequest = { request: HttpRequestData ->
+                assertEquals("application/json", request.headers["Accept"])
+                assertEquals("bearer $testApiKey", request.headers["Authorization"])
+                assertEquals("application/json", request.headers["Content-Type"])
+            },
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getMovieAlternativeTitles(movieId)
+
+        // Then
+        val expectedAlternativeTitlesResponseDTO = MovieAlternativeTitlesResponseDTO(
+            id = 550,
+            titles = listOf(
+                AlternativeTitleDTO(
+                    iso31661 = "US",
+                    title = "Fight Club",
+                    type = "Original Title",
+                ),
+                AlternativeTitleDTO(
+                    iso31661 = "ES",
+                    title = "El club de la lucha",
+                    type = null,
+                ),
+                AlternativeTitleDTO(
+                    iso31661 = "FR",
+                    title = "Fight Club",
+                    type = null,
+                ),
+                AlternativeTitleDTO(
+                    iso31661 = "IT",
+                    title = "Fight Club - Finché non sai",
+                    type = null,
+                ),
+                AlternativeTitleDTO(
+                    iso31661 = "DE",
+                    title = "Fight Club",
+                    type = "Theatrical Title",
+                ),
+            ),
+        )
+
+        assertTrue(result is ApiResult.Success)
+        assertEquals(expectedAlternativeTitlesResponseDTO, result.data)
+    }
+
+    @Test
+    fun `getMovieAlternativeTitles returns success with empty titles`() = runTest {
+        // Given
+        val movieId = 999
+        val expectedResponse = """
+            {
+                "id": 999,
+                "titles": []
+            }
+        """.trimIndent()
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/$movieId/alternative_titles",
+            expectedResponse = expectedResponse,
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getMovieAlternativeTitles(movieId)
+
+        // Then
+        assertTrue(result is ApiResult.Success)
+        assertEquals(999, result.data.id)
+        assertTrue(result.data.titles.isEmpty())
+    }
+
+    @Test
+    fun `getMovieAlternativeTitles returns HttpError when unauthorized`() = runTest {
+        // Given
+        val movieId = 550
+        val test401Response = """{"status_code":7,"status_message":"Invalid API key"}"""
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/$movieId/alternative_titles",
+            expectedResponse = test401Response,
+            expectedStatusCode = HttpStatusCode.Unauthorized,
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getMovieAlternativeTitles(movieId)
+
+        // Then
+        assertTrue(result is ApiResult.Error.HttpError)
+        assertEquals(401, result.code)
+        assertEquals(test401Response, result.message)
+    }
+
+    @Test
+    fun `getMovieAlternativeTitles returns HttpError when movie not found`() = runTest {
+        // Given
+        val movieId = 999999
+        val test404Response = """
+            {
+                "status_code":34,
+                "status_message":"The resource you requested could not be found."
+            }
+        """.trimIndent()
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/$movieId/alternative_titles",
+            expectedResponse = test404Response,
+            expectedStatusCode = HttpStatusCode.NotFound,
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getMovieAlternativeTitles(movieId)
+
+        // Then
+        assertTrue(result is ApiResult.Error.HttpError)
+        assertEquals(404, result.code)
+        assertEquals(test404Response, result.message)
+    }
+
+    @Test
+    fun `getMovieAlternativeTitles returns HttpError when server error occurs`() = runTest {
+        // Given
+        val movieId = 550
+        val test500Response = """{"error": "Internal server error"}"""
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/$movieId/alternative_titles",
+            expectedResponse = test500Response,
+            expectedStatusCode = HttpStatusCode.InternalServerError,
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getMovieAlternativeTitles(movieId)
+
+        // Then
+        assertTrue(result is ApiResult.Error.HttpError)
+        assertEquals(500, result.code)
+        assertEquals(test500Response, result.message)
+    }
+
+    @Test
+    fun `getMovieAlternativeTitles returns NetworkError when IOException occurs`() = runTest {
+        // Given
+        val movieId = 550
+        val moviesApi = MockEngine.test(
+            throwable = IOException("Network connection failed"),
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getMovieAlternativeTitles(movieId)
+
+        // Then
+        assertTrue(result is ApiResult.Error.NetworkError)
+        assertEquals("Network connection failed", result.message)
+    }
+
+    @Test
+    fun `getMovieAlternativeTitles returns SerializationError when response cannot be parsed`() = runTest {
+        // Given
+        val movieId = 550
+        val moviesApi = MockEngine.test(
+            path = "/movie/$movieId/alternative_titles",
+            expectedResponse = """{"invalid": "json structure", "missing": "required fields"}""",
+            expectedStatusCode = HttpStatusCode.OK,
+            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getMovieAlternativeTitles(movieId)
 
         // Then
         assertTrue(result is ApiResult.Error.SerializationError)

@@ -9,7 +9,9 @@ Follow these steps:
 3. **Determine target branch**: 
    - If arguments specify a target branch, use that
    - Otherwise, use the develop branch
-4. **Push current branch**: Push the current branch to the remote repository
+4. **Push current branch**: Use the commit-and-push-changes command to push the current branch to the remote repository
+   - If the branch does not exist on the remote, it will be created
+   - If the branch already exists, it will be updated with the latest changes
 5. **Create PR**: Use this template: `gh pr create --base <target_branch> --head <current_branch> --title "clear, detailed description of changes" --body "clear, detailed description of changes"`
 6. **Update issue status**: When the PR is successfully created, add a comment to the issue summarizing the work completed
 7. **Validate target**: Always create Pull Requests against the branch the user specifies or the project default.

@@ -1,7 +1,9 @@
 package dev.euryperez.tmdb.data.movies
 
+import dev.euryperez.tmdb.data.movies.api.dtos.AlternativeTitleDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.DatesDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.GenreDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieAlternativeTitlesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieCreditsResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
@@ -151,4 +153,22 @@ internal fun MovieCreditsResponseDTO.Companion.test(
     id = id,
     cast = cast,
     crew = crew,
+)
+
+internal fun AlternativeTitleDTO.Companion.test(
+    iso31661: String = "US",
+    title: String = "Alternative Title",
+    type: String? = null,
+): AlternativeTitleDTO = AlternativeTitleDTO(
+    iso31661 = iso31661,
+    title = title,
+    type = type,
+)
+
+internal fun MovieAlternativeTitlesResponseDTO.Companion.test(
+    id: Int = 550,
+    titles: List<AlternativeTitleDTO> = listOf(AlternativeTitleDTO.test()),
+): MovieAlternativeTitlesResponseDTO = MovieAlternativeTitlesResponseDTO(
+    id = id,
+    titles = titles,
 )

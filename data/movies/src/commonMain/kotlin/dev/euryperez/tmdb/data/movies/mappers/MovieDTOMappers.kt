@@ -1,15 +1,19 @@
 package dev.euryperez.tmdb.data.movies.mappers
 
 import dev.euryperez.tmdb.core.models.common.Gender
+import dev.euryperez.tmdb.core.models.movies.TmdbAlternativeTitle
 import dev.euryperez.tmdb.core.models.movies.TmdbGenre
 import dev.euryperez.tmdb.core.models.movies.TmdbMember
 import dev.euryperez.tmdb.core.models.movies.TmdbMovie
+import dev.euryperez.tmdb.core.models.movies.TmdbMovieAlternativeTitles
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieCredits
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieDetails
 import dev.euryperez.tmdb.core.models.movies.TmdbProductionCompany
 import dev.euryperez.tmdb.core.models.movies.TmdbProductionCountry
 import dev.euryperez.tmdb.core.utils.extensions.localDateOrNull
+import dev.euryperez.tmdb.data.movies.api.dtos.AlternativeTitleDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.GenreDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieAlternativeTitlesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieCreditsResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
@@ -92,4 +96,15 @@ internal fun MovieMemberDTO.toDomain() = TmdbMember(
     order = order,
     department = department,
     job = job,
+)
+
+internal fun MovieAlternativeTitlesResponseDTO.toDomain() = TmdbMovieAlternativeTitles(
+    id = id,
+    titles = titles.map { it.toDomain() },
+)
+
+internal fun AlternativeTitleDTO.toDomain() = TmdbAlternativeTitle(
+    countryCode = iso31661,
+    title = title,
+    type = type,
 )

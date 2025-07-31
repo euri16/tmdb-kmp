@@ -1,6 +1,7 @@
 package dev.euryperez.tmdb.data.movies
 
 import dev.euryperez.tmdb.core.models.movies.TmdbMovie
+import dev.euryperez.tmdb.core.models.movies.TmdbMovieAlternativeTitles
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieCredits
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieDetails
 import dev.euryperez.tmdb.data.common.models.DataResult
@@ -26,6 +27,8 @@ interface MoviesRepository {
     ): DataResult<List<TmdbMovie>>
 
     suspend fun getMovieCredits(movieId: Int, language: String = "en-US"): DataResult<TmdbMovieCredits>
+
+    suspend fun getMovieAlternativeTitles(movieId: Int): DataResult<TmdbMovieAlternativeTitles>
 
     companion object {
         private var instance: MoviesRepository? = null
