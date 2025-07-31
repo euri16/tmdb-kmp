@@ -3,11 +3,15 @@ Create a PR against this branch: $ARGUMENTS.
 Follow these steps:
 
 1. ALWAYS start by running git status to check what branch you're on
-2. Use this template: `gh pr create --base develop --head <current_branch_name> --title "clear, detailed
-description of changes" --body "clear, detailed description of changes"`
-3. Always create Pull Requests against the branch the user specifies (or default to develop branch).
-NEVER EVER AGAINST main
-4. If you run into issues, STOP and explain the error to the user.
+2. Get the current branch name: `git branch --show-current`
+3. Determine target branch:
+   - If arguments specify a target branch, use that
+   - Otherwise, use the develop branch
+4. Use this template: `gh pr create --base <target_branch> --head <current_branch> --title "clear, detailed description of changes" --body "clear, detailed description of changes"`
+5. **Update issue status**: When the PR is successfully created, add a comment to the issue summarizing the work completed
+6. Always create Pull Requests against the branch the user specifies or the project default.
+NEVER EVER AGAINST main unless explicitly specified
+7. If you run into issues, STOP and explain the error to the user.
 
 Remember:
 
