@@ -42,6 +42,10 @@ class MoviesApiTest : BaseTest {
         mainCoroutineRule.tearDown()
     }
 
+    // =========================
+    // getPopularMovies Tests
+    // =========================
+
     @Test
     fun `getPopularMovies returns success when API call succeeds`() = runTest {
         // Given
@@ -244,6 +248,10 @@ class MoviesApiTest : BaseTest {
         assertTrue(result.message?.contains("serial")!!)
     }
 
+    // =========================
+    // getNowPlayingMovies Tests
+    // =========================
+
     @Test
     fun `getNowPlayingMovies returns success when API call succeeds`() = runTest {
         // Given
@@ -357,6 +365,310 @@ class MoviesApiTest : BaseTest {
         assertEquals(8, result.data.totalPages)
         assertEquals("2024-02-20", result.data.dates.maximum)
         assertEquals("2024-01-05", result.data.dates.minimum)
+    }
+
+    @Test
+    fun `getNowPlayingMovies returns HttpError when unauthorized`() = runTest {
+        // Given
+        val test401Response = """{"status_code":7,"status_message":"Invalid API key"}"""
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/now_playing",
+            expectedResponse = test401Response,
+            expectedStatusCode = HttpStatusCode.Unauthorized,
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getNowPlayingMovies(page = 1, language = "en-US")
+
+        // Then
+        assertTrue(result is ApiResult.Error.HttpError)
+        assertEquals(401, result.code)
+        assertEquals(test401Response, result.message)
+    }
+
+    @Test
+    fun `getNowPlayingMovies returns HttpError when client error occurs`() = runTest {
+        // Given
+        val test404Response = """
+                {
+                    "status_code":34,
+                    "status_message":"The resource you requested could not be found."
+                }
+        """.trimIndent()
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/now_playing",
+            expectedResponse = test404Response,
+            expectedStatusCode = HttpStatusCode.NotFound,
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getNowPlayingMovies(page = 1, language = "en-US")
+
+        // Then
+        assertTrue(result is ApiResult.Error.HttpError)
+        assertEquals(404, result.code)
+        assertEquals(test404Response, result.message)
+    }
+
+    @Test
+    fun `getNowPlayingMovies returns HttpError when server error occurs`() = runTest {
+        // Given
+        val test500Response = """{"error": "Internal server error"}"""
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/now_playing",
+            expectedResponse = test500Response,
+            expectedStatusCode = HttpStatusCode.InternalServerError,
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getNowPlayingMovies(page = 1, language = "en-US")
+
+        // Then
+        assertTrue(result is ApiResult.Error.HttpError)
+        assertEquals(500, result.code)
+        assertEquals(test500Response, result.message)
+    }
+
+    @Test
+    fun `getNowPlayingMovies returns NetworkError when IOException occurs`() = runTest {
+        // Given
+        val moviesApi = MockEngine.test(
+            throwable = IOException("Network connection failed"),
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getNowPlayingMovies(page = 1, language = "en-US")
+
+        // Then
+        assertTrue(result is ApiResult.Error.NetworkError)
+        assertEquals("Network connection failed", result.message)
+    }
+
+    @Test
+    fun `getNowPlayingMovies returns SerializationError when response cannot be parsed`() = runTest {
+        // Given
+        val moviesApi = MockEngine.test(
+            path = "/movie/now_playing",
+            expectedResponse = """{"invalid": "json structure", "missing": "required fields"}""",
+            expectedStatusCode = HttpStatusCode.OK,
+            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getNowPlayingMovies(page = 1, language = "en-US")
+
+        // Then
+        assertTrue(result is ApiResult.Error.SerializationError)
+        assertTrue(result.message?.contains("serial")!!)
+    }
+
+    // =========================
+    // getTopRatedMovies Tests
+    // =========================
+
+    @Test
+    fun `getTopRatedMovies returns success when API call succeeds`() = runTest {
+        // Given
+        val expectedResponse = """
+            {
+                "page": 1,
+                "results": [
+                    {
+                        "id": 3,
+                        "title": "Top Rated Movie",
+                        "overview": "A highly rated movie",
+                        "poster_path": "/top_rated_poster.jpg",
+                        "backdrop_path": "/top_rated_backdrop.jpg",
+                        "release_date": "2024-01-10",
+                        "vote_average": 9.0,
+                        "vote_count": 2000,
+                        "popularity": 9.5,
+                        "genre_ids": [18, 10749],
+                        "adult": false,
+                        "original_language": "en",
+                        "original_title": "Top Rated Movie",
+                        "video": false
+                    }
+                ],
+                "total_pages": 12,
+                "total_results": 120
+            }
+        """.trimIndent()
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/top_rated",
+            expectedResponse = expectedResponse,
+            onRequest = { request: HttpRequestData ->
+                assertEquals("application/json", request.headers["Accept"])
+                assertEquals("bearer $testApiKey", request.headers["Authorization"])
+                assertEquals("application/json", request.headers["Content-Type"])
+
+                assertEquals("1", request.url.parameters["page"])
+                assertEquals("en-US", request.url.parameters["language"])
+            },
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getTopRatedMovies(page = 1, language = "en-US")
+
+        // Then
+        val expectedMovieListResponseDTO = MovieListResponseDTO(
+            page = 1,
+            totalPages = 12,
+            totalResults = 120,
+            results = listOf(
+                MovieDTO(
+                    id = 3,
+                    title = "Top Rated Movie",
+                    overview = "A highly rated movie",
+                    posterPath = "/top_rated_poster.jpg",
+                    backdropPath = "/top_rated_backdrop.jpg",
+                    releaseDate = "2024-01-10",
+                    voteAverage = 9.0,
+                    voteCount = 2000,
+                    popularity = 9.5,
+                    genreIds = listOf(18, 10749),
+                    adult = false,
+                    originalLanguage = "en",
+                    originalTitle = "Top Rated Movie",
+                    video = false,
+                ),
+            ),
+        )
+
+        assertTrue(result is ApiResult.Success)
+        assertEquals(expectedMovieListResponseDTO, result.data)
+    }
+
+    @Test
+    fun `getTopRatedMovies returns success with custom parameters`() = runTest {
+        // Given
+        val expectedResponse = """
+            {
+                "page": 4,
+                "results": [],
+                "total_pages": 15,
+                "total_results": 150
+            }
+        """.trimIndent()
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/top_rated",
+            expectedResponse = expectedResponse,
+            onRequest = { request: HttpRequestData ->
+                assertEquals("4", request.url.parameters["page"])
+                assertEquals("de-DE", request.url.parameters["language"])
+            },
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getTopRatedMovies(page = 4, language = "de-DE")
+
+        // Then
+        assertTrue(result is ApiResult.Success)
+        assertEquals(4, result.data.page)
+        assertEquals(15, result.data.totalPages)
+    }
+
+    @Test
+    fun `getTopRatedMovies returns HttpError when unauthorized`() = runTest {
+        // Given
+        val test401Response = """{"status_code":7,"status_message":"Invalid API key"}"""
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/top_rated",
+            expectedResponse = test401Response,
+            expectedStatusCode = HttpStatusCode.Unauthorized,
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getTopRatedMovies(page = 1, language = "en-US")
+
+        // Then
+        assertTrue(result is ApiResult.Error.HttpError)
+        assertEquals(401, result.code)
+        assertEquals(test401Response, result.message)
+    }
+
+    @Test
+    fun `getTopRatedMovies returns HttpError when client error occurs`() = runTest {
+        // Given
+        val test404Response = """
+                {
+                    "status_code":34,
+                    "status_message":"The resource you requested could not be found."
+                }
+        """.trimIndent()
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/top_rated",
+            expectedResponse = test404Response,
+            expectedStatusCode = HttpStatusCode.NotFound,
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getTopRatedMovies(page = 1, language = "en-US")
+
+        // Then
+        assertTrue(result is ApiResult.Error.HttpError)
+        assertEquals(404, result.code)
+        assertEquals(test404Response, result.message)
+    }
+
+    @Test
+    fun `getTopRatedMovies returns HttpError when server error occurs`() = runTest {
+        // Given
+        val test500Response = """{"error": "Internal server error"}"""
+
+        val moviesApi = MockEngine.test(
+            path = "/movie/top_rated",
+            expectedResponse = test500Response,
+            expectedStatusCode = HttpStatusCode.InternalServerError,
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getTopRatedMovies(page = 1, language = "en-US")
+
+        // Then
+        assertTrue(result is ApiResult.Error.HttpError)
+        assertEquals(500, result.code)
+        assertEquals(test500Response, result.message)
+    }
+
+    @Test
+    fun `getTopRatedMovies returns NetworkError when IOException occurs`() = runTest {
+        // Given
+        val moviesApi = MockEngine.test(
+            throwable = IOException("Network connection failed"),
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getTopRatedMovies(page = 1, language = "en-US")
+
+        // Then
+        assertTrue(result is ApiResult.Error.NetworkError)
+        assertEquals("Network connection failed", result.message)
+    }
+
+    @Test
+    fun `getTopRatedMovies returns SerializationError when response cannot be parsed`() = runTest {
+        // Given
+        val moviesApi = MockEngine.test(
+            path = "/movie/top_rated",
+            expectedResponse = """{"invalid": "json structure", "missing": "required fields"}""",
+            expectedStatusCode = HttpStatusCode.OK,
+            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+        ).buildMoviesApi()
+
+        // When
+        val result = moviesApi.getTopRatedMovies(page = 1, language = "en-US")
+
+        // Then
+        assertTrue(result is ApiResult.Error.SerializationError)
+        assertTrue(result.message?.contains("serial")!!)
     }
 
     private fun HttpClientEngine.buildMoviesApi(baseUrl: String = testBaseUrl, apiKey: String = testApiKey): MoviesApi {

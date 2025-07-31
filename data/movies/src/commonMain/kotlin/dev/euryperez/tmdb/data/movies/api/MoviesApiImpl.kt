@@ -30,6 +30,12 @@ internal class MoviesApiImpl(val httpClient: HttpClient) : MoviesApi {
         )
     }
 
+    override suspend fun getTopRatedMovies(page: Int, language: String): ApiResult<MovieListResponseDTO> {
+        return httpClient.getAsApiResult(
+            MovieResource.TopRated(page = page, language = language),
+        )
+    }
+
     override suspend fun getMovieDetails(movieId: Int, language: String): ApiResult<MovieDetailsDTO> {
         return httpClient.getAsApiResult(
             MovieResource.Id(movieId = movieId, language = language),

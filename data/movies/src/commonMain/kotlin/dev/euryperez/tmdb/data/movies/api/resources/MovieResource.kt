@@ -34,4 +34,11 @@ internal class MovieResource {
         val page: Int = 1,
         val language: String = "en-US",
     )
+
+    @Resource("top_rated")
+    class TopRated(
+        val parent: MovieResource = MovieResource(),
+        val page: Int = 1,
+        val language: String = "en-US",
+    )
 }

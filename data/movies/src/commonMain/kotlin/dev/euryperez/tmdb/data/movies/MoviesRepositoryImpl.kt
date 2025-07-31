@@ -39,6 +39,14 @@ internal class MoviesRepositoryImpl(
         }
     }
 
+    override suspend fun getTopRatedMovies(page: Int, language: String): DataResult<List<TmdbMovie>> {
+        return withContext(dispatcherProvider.default) {
+            moviesApi.getTopRatedMovies(page = page, language = language)
+                .toDataResult()
+                .map { it.results.map { dto -> dto.toDomain() } }
+        }
+    }
+
     override suspend fun getMovieDetails(movieId: Int, language: String): DataResult<TmdbMovieDetails> {
         return withContext(dispatcherProvider.default) {
             moviesApi.getMovieDetails(movieId = movieId, language = language)
