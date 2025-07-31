@@ -15,6 +15,8 @@ internal interface MoviesApi {
 
     suspend fun getNowPlayingMovies(page: Int = 1, language: String = "en-US"): ApiResult<NowPlayingMoviesResponseDTO>
 
+    suspend fun getTopRatedMovies(page: Int = 1, language: String = "en-US"): ApiResult<MovieListResponseDTO>
+
     suspend fun getMovieDetails(movieId: Int, language: String = "en-US"): ApiResult<MovieDetailsDTO>
 
     // TODO: Move to the :data:search module
