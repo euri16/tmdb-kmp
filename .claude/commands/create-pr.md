@@ -1,9 +1,5 @@
 Create a PR against this branch: $ARGUMENTS.
 
-Before, run these commands to ensure your SSH key is set up correctly:
-
-1. eval "$(ssh-agent -s)" && ssh -T git@github-personal
-
 Follow these steps:
 
 1. ALWAYS start by running git status to check what branch you're on
@@ -16,20 +12,21 @@ NEVER EVER AGAINST main
 Remember:
 
 - Use the GitHub CLI (gh) for all GitHub-related tasks
-- DO NOT credit yourself
+- DO NOT credit yourself in the commits
 
 **PR Title Guidelines**:
-   - Use conventional commit format (feat(<issue_number>):, fix(<issue_number>):, docs(<issue_number>):, etc.)
+   - Use conventional commit format (feat(<issue_number>):, fix(<issue_number>):, docs(<issue_number>):, etc.). Always include the issue number inside the parentheses.
    - Be concise but descriptive
    - Capitalize first letter
    - Avoid ending with period
 
 **PR Description Structure**:
-   - Brief summary of changes
-   - List of key modifications
-   - Testing notes if applicable
-   - Any breaking changes or migration notes
-   - Link to related issues if mentioned
+   - Use these sections in this order:
+     - **Related Issues**: Link to any related issues or tickets
+     - **Summary**: Brief overview of what the PR does
+     - **Changes**: Detailed list of changes made. Use bullet points.
+     - **Testing**: Optional. Instructions on how to test the changes. Only add this section
+                    when the PR needs special instructions to test.
 
 **Error Recovery**: If gh CLI fails:
    - Provide clear error explanation
