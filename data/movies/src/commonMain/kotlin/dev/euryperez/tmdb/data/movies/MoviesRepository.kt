@@ -33,9 +33,12 @@ interface MoviesRepository {
     companion object {
         private var instance: MoviesRepository? = null
 
-        fun create(apiKey: String): MoviesRepository {
-            return instance ?: MoviesRepositoryImpl(moviesApi = MoviesApi.create(apiKey))
-                .also { instance = it }
+        fun getInstance(apiKey: String): MoviesRepository {
+            return instance ?: factory(apiKey).also { instance = it }
+        }
+
+        fun factory(apiKey: String): MoviesRepository {
+            return MoviesRepositoryImpl(moviesApi = MoviesApi.factory(apiKey))
         }
     }
 }

@@ -35,9 +35,13 @@ internal interface MoviesApi {
     companion object {
         private var instance: MoviesApi? = null
 
-        fun create(apiKey: String): MoviesApi {
+        fun getInstance(apiKey: String): MoviesApi {
             return instance ?: MoviesApiImpl(httpClient = buildHttpClient(apiKey = apiKey))
                 .also { instance = it }
+        }
+
+        fun factory(apiKey: String): MoviesApi {
+            return MoviesApiImpl(httpClient = buildHttpClient(apiKey = apiKey))
         }
     }
 }

@@ -1,5 +1,18 @@
 # tmdb-kmp
 
+## Integration Tests
+
+This project includes comprehensive integration tests that verify end-to-end functionality against the real TMDB API. For detailed information about running and understanding these tests, see [INTEGRATION-TESTS.md](INTEGRATION-TESTS.md).
+
+Quick start for integration tests:
+```bash
+# Set your TMDB API key
+export TMDB_API_KEY="your_api_key_here"
+
+# Run all integration tests
+./gradlew :core:test:integration-tests:allTest
+```
+
 # Git Hooks Setup
 
 This project uses Git hooks to ensure code quality before commits. The hooks are already included in the codebase under `config/hooks/`.

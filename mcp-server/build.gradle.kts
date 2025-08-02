@@ -34,6 +34,7 @@ kotlin {
 
 dependencies {
     implementation(projects.core.models)
+    implementation(projects.core.utils)
     implementation(projects.data.common)
     implementation(projects.data.movies)
 

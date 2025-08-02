@@ -11,7 +11,7 @@ kotlin {
     jvm()
 
     androidLibrary {
-        namespace = "dev.euryperez.tmdb.core.test"
+        namespace = "dev.euryperez.tmdb.core.test.common"
         compileSdk = 36
         minSdk = 26
 
@@ -103,7 +103,7 @@ kotlin {
             dependencies {
                 // Add iOS-specific dependencies here. This a source set created by Kotlin Gradle
                 // Plugin (KGP) that each specific iOS target (e.g., iosX64) depends on as
-                // part of KMP’s default source set hierarchy. Note that this source set depends
+                // part of KMP's default source set hierarchy. Note that this source set depends
                 // on common by default and will correctly pull the iOS artifacts of any
                 // KMP dependencies declared in commonMain.
             }

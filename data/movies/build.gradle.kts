@@ -70,7 +70,8 @@ kotlin {
 
         commonTest {
             dependencies {
-                implementation(projects.core.test)
+                implementation(projects.core.test.testCommon)
+
                 implementation(libs.test.kotlin)
                 implementation(libs.test.ktor.client)
             }

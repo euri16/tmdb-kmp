@@ -6,12 +6,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class MovieCreditsResponseDTO(
     val id: Int,
-    val cast: List<MovieMemberDTO>,
-    val crew: List<MovieMemberDTO>,
+    val cast: List<MovieCastMemberDTO>,
+    val crew: List<MovieCrewMemberDTO>,
 )
 
 @Serializable
-internal data class MovieMemberDTO(
+internal data class MovieCastMemberDTO(
     val adult: Boolean,
     val gender: Int?, // 0 = not specified, 1 = female, 2 = male, 3 = non-binary
     val id: Int,
@@ -29,6 +29,23 @@ internal data class MovieMemberDTO(
     @SerialName("credit_id")
     val creditId: String,
     val order: Int?,
-    val department: String?,
-    val job: String?,
+)
+
+@Serializable
+internal data class MovieCrewMemberDTO(
+    val adult: Boolean,
+    val gender: Int?, // 0 = not specified, 1 = female, 2 = male, 3 = non-binary
+    val id: Int,
+    @SerialName("known_for_department")
+    val knownForDepartment: String,
+    val name: String,
+    @SerialName("original_name")
+    val originalName: String,
+    val popularity: Double,
+    @SerialName("profile_path")
+    val profilePath: String?,
+    @SerialName("credit_id")
+    val creditId: String,
+    val department: String,
+    val job: String,
 )

@@ -1,12 +1,13 @@
 package dev.euryperez.tmdb.mcpserver
 
+import dev.euryperez.tmdb.core.utils.extensions.getEnvironmentVariable
 import dev.euryperez.tmdb.data.movies.MoviesRepository
 import dev.euryperez.tmdb.mcpserver.server.McpServer
 import kotlinx.coroutines.runBlocking
 
 fun main() {
-    val apiKey = System.getenv("TMDB_API_KEY")!!
-    val moviesRepository = MoviesRepository.create(apiKey = apiKey)
+    val apiKey = getEnvironmentVariable("TMDB_API_KEY")!!
+    val moviesRepository = MoviesRepository.getInstance(apiKey = apiKey)
     val mcpServer = McpServer(moviesRepository)
 
     runBlocking {
