@@ -9,6 +9,7 @@ import dev.euryperez.tmdb.data.movies.api.dtos.MovieCreditsResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieCrewMemberDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieExternalIdsResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.NowPlayingMoviesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.UpcomingMoviesResponseDTO
@@ -193,4 +194,20 @@ internal fun MovieAlternativeTitlesResponseDTO.Companion.test(
 ): MovieAlternativeTitlesResponseDTO = MovieAlternativeTitlesResponseDTO(
     id = id,
     titles = titles,
+)
+
+internal fun MovieExternalIdsResponseDTO.Companion.test(
+    id: Int = 550,
+    imdbId: String? = "tt0137523",
+    wikidataId: String? = "Q190050",
+    facebookId: String? = "FightClubFilm",
+    instagramId: String? = "fightclubmovie",
+    twitterId: String? = "fightclub",
+): MovieExternalIdsResponseDTO = MovieExternalIdsResponseDTO(
+    id = id,
+    imdbId = imdbId,
+    wikidataId = wikidataId,
+    facebookId = facebookId,
+    instagramId = instagramId,
+    twitterId = twitterId,
 )

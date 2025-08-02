@@ -15,6 +15,9 @@ internal class MovieResource {
 
         @Resource("alternative_titles")
         class AlternativeTitles(val parent: Id)
+
+        @Resource("external_ids")
+        class ExternalIds(val parent: Id)
     }
 
     @Resource("popular")
