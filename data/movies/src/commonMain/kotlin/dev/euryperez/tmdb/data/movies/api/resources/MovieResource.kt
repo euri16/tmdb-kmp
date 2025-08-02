@@ -12,6 +12,9 @@ internal class MovieResource {
     ) {
         @Resource("credits")
         class Credits(val parent: Id, val language: String = "en-US")
+
+        @Resource("alternative_titles")
+        class AlternativeTitles(val parent: Id)
     }
 
     @Resource("popular")

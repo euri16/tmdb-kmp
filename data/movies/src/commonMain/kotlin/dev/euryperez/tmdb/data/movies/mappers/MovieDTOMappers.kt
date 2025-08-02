@@ -1,19 +1,24 @@
 package dev.euryperez.tmdb.data.movies.mappers
 
 import dev.euryperez.tmdb.core.models.common.Gender
+import dev.euryperez.tmdb.core.models.movies.TmdbAlternativeTitle
 import dev.euryperez.tmdb.core.models.movies.TmdbGenre
 import dev.euryperez.tmdb.core.models.movies.TmdbMember
 import dev.euryperez.tmdb.core.models.movies.TmdbMovie
+import dev.euryperez.tmdb.core.models.movies.TmdbMovieAlternativeTitles
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieCredits
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieDetails
 import dev.euryperez.tmdb.core.models.movies.TmdbProductionCompany
 import dev.euryperez.tmdb.core.models.movies.TmdbProductionCountry
 import dev.euryperez.tmdb.core.utils.extensions.localDateOrNull
+import dev.euryperez.tmdb.data.movies.api.dtos.AlternativeTitleDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.GenreDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieAlternativeTitlesResponseDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieCastMemberDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieCreditsResponseDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieCrewMemberDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
-import dev.euryperez.tmdb.data.movies.api.dtos.MovieMemberDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.ProductionCompanyDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.ProductionCountryDTO
 
@@ -73,7 +78,7 @@ internal fun MovieCreditsResponseDTO.toDomain() = TmdbMovieCredits(
     crew = crew.map { it.toDomain() },
 )
 
-internal fun MovieMemberDTO.toDomain() = TmdbMember(
+internal fun MovieCastMemberDTO.toDomain() = TmdbMember(
     id = id,
     name = name,
     adult = adult,
@@ -90,6 +95,38 @@ internal fun MovieMemberDTO.toDomain() = TmdbMember(
     character = character,
     creditId = creditId,
     order = order,
+    department = null, // Cast members don't have department
+    job = null, // Cast members don't have job
+)
+
+internal fun MovieCrewMemberDTO.toDomain() = TmdbMember(
+    id = id,
+    name = name,
+    adult = adult,
+    gender = when (gender) {
+        1 -> Gender.Female
+        2 -> Gender.Male
+        else -> Gender.Unknown
+    },
+    knownForDepartment = knownForDepartment,
+    originalName = originalName,
+    popularity = popularity,
+    profilePath = profilePath,
+    castId = null, // Crew members don't have cast_id
+    character = null, // Crew members don't have character
+    creditId = creditId,
+    order = null, // Crew members don't have order
     department = department,
     job = job,
+)
+
+internal fun MovieAlternativeTitlesResponseDTO.toDomain() = TmdbMovieAlternativeTitles(
+    id = id,
+    titles = titles.map { it.toDomain() },
+)
+
+internal fun AlternativeTitleDTO.toDomain() = TmdbAlternativeTitle(
+    countryCode = iso31661,
+    title = title,
+    type = type,
 )

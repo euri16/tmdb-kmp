@@ -2,6 +2,7 @@ package dev.euryperez.tmdb.data.movies.api
 
 import dev.euryperez.tmdb.core.network.buildHttpClient
 import dev.euryperez.tmdb.core.network.models.ApiResult
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieAlternativeTitlesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieCreditsResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
@@ -29,12 +30,18 @@ internal interface MoviesApi {
 
     suspend fun getMovieCredits(movieId: Int, language: String = "en-US"): ApiResult<MovieCreditsResponseDTO>
 
+    suspend fun getMovieAlternativeTitles(movieId: Int): ApiResult<MovieAlternativeTitlesResponseDTO>
+
     companion object {
         private var instance: MoviesApi? = null
 
-        fun create(apiKey: String): MoviesApi {
+        fun getInstance(apiKey: String): MoviesApi {
             return instance ?: MoviesApiImpl(httpClient = buildHttpClient(apiKey = apiKey))
                 .also { instance = it }
+        }
+
+        fun factory(apiKey: String): MoviesApi {
+            return MoviesApiImpl(httpClient = buildHttpClient(apiKey = apiKey))
         }
     }
 }

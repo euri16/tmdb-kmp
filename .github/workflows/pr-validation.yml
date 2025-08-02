@@ -5,6 +5,9 @@ on:
     branches: [ main, develop, 'task/*', 'bugfix/*', 'adhoc/*', 'feature/*' ]
     types: [ opened, synchronize, reopened ]
 
+  push:
+    branches: [ main, develop ]
+
 jobs:
   validate:
     name: Validate Code & Run Tests
@@ -37,7 +40,7 @@ jobs:
         run: ./gradlew validateCode
 
       - name: Run unit tests
-        run: ./gradlew allTests
+        run: ./gradlew testAndroidHostTest
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

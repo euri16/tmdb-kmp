@@ -1,12 +1,15 @@
 package dev.euryperez.tmdb.data.movies
 
+import dev.euryperez.tmdb.data.movies.api.dtos.AlternativeTitleDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.DatesDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.GenreDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieAlternativeTitlesResponseDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieCastMemberDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieCreditsResponseDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieCrewMemberDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
-import dev.euryperez.tmdb.data.movies.api.dtos.MovieMemberDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.NowPlayingMoviesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.UpcomingMoviesResponseDTO
 
@@ -112,7 +115,7 @@ internal fun MovieDetailsDTO.Companion.test(): MovieDetailsDTO = MovieDetailsDTO
 
 internal fun GenreDTO.Companion.test(id: Int = 14, name: String = "Sci‑Fi") = GenreDTO(id, name)
 
-internal fun MovieMemberDTO.Companion.test(
+internal fun MovieCastMemberDTO.Companion.test(
     id: Int = 1,
     name: String = "John Doe",
     gender: Int? = 2, // 0 = unspecified, 1 = female, 2 = male, 3 = non-binary
@@ -123,10 +126,8 @@ internal fun MovieMemberDTO.Companion.test(
     character: String? = "Hero",
     creditId: String = "credit-$id",
     order: Int? = 0,
-    department: String? = null,
-    job: String? = null,
     adult: Boolean = false,
-): MovieMemberDTO = MovieMemberDTO(
+): MovieCastMemberDTO = MovieCastMemberDTO(
     adult = adult,
     gender = gender,
     id = id,
@@ -139,16 +140,57 @@ internal fun MovieMemberDTO.Companion.test(
     character = character,
     creditId = creditId,
     order = order,
+)
+
+internal fun MovieCrewMemberDTO.Companion.test(
+    id: Int = 2,
+    name: String = "Jane Smith",
+    gender: Int? = 1, // 0 = unspecified, 1 = female, 2 = male, 3 = non-binary
+    knownForDepartment: String = "Directing",
+    popularity: Double = 8.0,
+    profilePath: String? = "/jane_smith.jpg",
+    creditId: String = "credit-$id",
+    department: String = "Directing",
+    job: String = "Director",
+    adult: Boolean = false,
+): MovieCrewMemberDTO = MovieCrewMemberDTO(
+    adult = adult,
+    gender = gender,
+    id = id,
+    knownForDepartment = knownForDepartment,
+    name = name,
+    originalName = name,
+    popularity = popularity,
+    profilePath = profilePath,
+    creditId = creditId,
     department = department,
     job = job,
 )
 
 internal fun MovieCreditsResponseDTO.Companion.test(
     id: Int = 42,
-    cast: List<MovieMemberDTO> = listOf(MovieMemberDTO.test()),
-    crew: List<MovieMemberDTO> = listOf(MovieMemberDTO.test()),
+    cast: List<MovieCastMemberDTO> = listOf(MovieCastMemberDTO.test()),
+    crew: List<MovieCrewMemberDTO> = listOf(MovieCrewMemberDTO.test()),
 ): MovieCreditsResponseDTO = MovieCreditsResponseDTO(
     id = id,
     cast = cast,
     crew = crew,
+)
+
+internal fun AlternativeTitleDTO.Companion.test(
+    iso31661: String = "US",
+    title: String = "Alternative Title",
+    type: String? = null,
+): AlternativeTitleDTO = AlternativeTitleDTO(
+    iso31661 = iso31661,
+    title = title,
+    type = type,
+)
+
+internal fun MovieAlternativeTitlesResponseDTO.Companion.test(
+    id: Int = 550,
+    titles: List<AlternativeTitleDTO> = listOf(AlternativeTitleDTO.test()),
+): MovieAlternativeTitlesResponseDTO = MovieAlternativeTitlesResponseDTO(
+    id = id,
+    titles = titles,
 )

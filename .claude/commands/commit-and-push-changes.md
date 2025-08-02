@@ -12,6 +12,7 @@ Follow these steps:
    - Be concise but descriptive
    - Capitalize first letter
    - Avoid ending with period
+   - Create multiple commits if the changes are substantial and logically distinct
 4. **Push changes**: Push the changes to the current branch
 5. **Show summary**: Show a brief summary of the changes made
 
