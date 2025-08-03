@@ -4,6 +4,7 @@ import dev.euryperez.tmdb.core.models.movies.TmdbMovie
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieAlternativeTitles
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieCredits
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieDetails
+import dev.euryperez.tmdb.core.models.movies.TmdbMovieExternalIds
 import dev.euryperez.tmdb.core.utils.coroutines.DispatcherProvider
 import dev.euryperez.tmdb.core.utils.coroutines.DispatcherProviderImpl
 import dev.euryperez.tmdb.data.common.extensions.toDataResult
@@ -83,6 +84,14 @@ internal class MoviesRepositoryImpl(
     override suspend fun getMovieAlternativeTitles(movieId: Int): DataResult<TmdbMovieAlternativeTitles> {
         return withContext(dispatcherProvider.default) {
             moviesApi.getMovieAlternativeTitles(movieId = movieId)
+                .toDataResult()
+                .map { it.toDomain() }
+        }
+    }
+
+    override suspend fun getMovieExternalIds(movieId: Int): DataResult<TmdbMovieExternalIds> {
+        return withContext(dispatcherProvider.default) {
+            moviesApi.getMovieExternalIds(movieId = movieId)
                 .toDataResult()
                 .map { it.toDomain() }
         }
