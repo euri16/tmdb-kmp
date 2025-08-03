@@ -6,6 +6,7 @@ import dev.euryperez.tmdb.data.movies.api.dtos.MovieAlternativeTitlesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieCreditsResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieExternalIdsResponseDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieImagesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.NowPlayingMoviesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.UpcomingMoviesResponseDTO
@@ -38,7 +39,7 @@ internal class MoviesApiImpl(val httpClient: HttpClient) : MoviesApi {
         )
     }
 
-    override suspend fun getMovieDetails(movieId: Int, language: String): ApiResult<MovieDetailsDTO> {
+    override suspend fun getMovieDetails(movieId: Int, language: String?): ApiResult<MovieDetailsDTO> {
         return httpClient.getAsApiResult(
             MovieResource.Id(movieId = movieId, language = language),
         )
@@ -82,6 +83,21 @@ internal class MoviesApiImpl(val httpClient: HttpClient) : MoviesApi {
         return httpClient.getAsApiResult(
             MovieResource.Id.ExternalIds(
                 parent = MovieResource.Id(movieId = movieId),
+            ),
+        )
+    }
+
+    override suspend fun getMovieImages(
+        movieId: Int,
+        language: String?,
+        includeImageLanguage: List<String>?,
+    ): ApiResult<MovieImagesResponseDTO> {
+        val includeImageLanguageParam = includeImageLanguage?.joinToString(",")
+        return httpClient.getAsApiResult(
+            MovieResource.Id.Images(
+                parent = MovieResource.Id(movieId = movieId, language = null),
+                language = language,
+                includeImageLanguage = includeImageLanguageParam,
             ),
         )
     }

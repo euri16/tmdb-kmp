@@ -1,6 +1,7 @@
 package dev.euryperez.tmdb.data.movies.api.resources
 
 import io.ktor.resources.Resource
+import kotlinx.serialization.SerialName
 
 @Resource("/movie")
 internal class MovieResource {
@@ -8,7 +9,7 @@ internal class MovieResource {
     class Id(
         val parent: MovieResource = MovieResource(),
         val movieId: Int,
-        val language: String = "en-US",
+        val language: String? = "en-US",
     ) {
         @Resource("credits")
         class Credits(val parent: Id, val language: String = "en-US")
@@ -18,6 +19,13 @@ internal class MovieResource {
 
         @Resource("external_ids")
         class ExternalIds(val parent: Id)
+
+        @Resource("images")
+        class Images(
+            val parent: Id,
+            val language: String? = null,
+            @SerialName("include_image_language") val includeImageLanguage: String? = null,
+        )
     }
 
     @Resource("popular")

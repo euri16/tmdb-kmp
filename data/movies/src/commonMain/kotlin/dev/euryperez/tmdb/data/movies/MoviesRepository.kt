@@ -5,6 +5,7 @@ import dev.euryperez.tmdb.core.models.movies.TmdbMovieAlternativeTitles
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieCredits
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieDetails
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieExternalIds
+import dev.euryperez.tmdb.core.models.movies.TmdbMovieImages
 import dev.euryperez.tmdb.data.common.models.DataResult
 import dev.euryperez.tmdb.data.movies.api.MoviesApi
 
@@ -32,6 +33,12 @@ interface MoviesRepository {
     suspend fun getMovieAlternativeTitles(movieId: Int): DataResult<TmdbMovieAlternativeTitles>
 
     suspend fun getMovieExternalIds(movieId: Int): DataResult<TmdbMovieExternalIds>
+
+    suspend fun getMovieImages(
+        movieId: Int,
+        language: String? = null,
+        includeImageLanguage: List<String>? = null,
+    ): DataResult<TmdbMovieImages>
 
     companion object {
         private var instance: MoviesRepository? = null

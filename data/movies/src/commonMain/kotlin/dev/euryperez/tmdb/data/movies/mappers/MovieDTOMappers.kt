@@ -9,8 +9,11 @@ import dev.euryperez.tmdb.core.models.movies.TmdbMovieAlternativeTitles
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieCredits
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieDetails
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieExternalIds
+import dev.euryperez.tmdb.core.models.movies.TmdbMovieImage
+import dev.euryperez.tmdb.core.models.movies.TmdbMovieImages
 import dev.euryperez.tmdb.core.models.movies.TmdbProductionCompany
 import dev.euryperez.tmdb.core.models.movies.TmdbProductionCountry
+import dev.euryperez.tmdb.core.models.movies.TmdbSize
 import dev.euryperez.tmdb.core.utils.extensions.localDateOrNull
 import dev.euryperez.tmdb.data.movies.api.dtos.AlternativeTitleDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.GenreDTO
@@ -21,6 +24,8 @@ import dev.euryperez.tmdb.data.movies.api.dtos.MovieCrewMemberDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieExternalIdsResponseDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieImageDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieImagesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.ProductionCompanyDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.ProductionCountryDTO
 
@@ -140,4 +145,20 @@ internal fun MovieExternalIdsResponseDTO.toDomain() = TmdbMovieExternalIds(
     facebookId = facebookId,
     instagramId = instagramId,
     twitterId = twitterId,
+)
+
+internal fun MovieImagesResponseDTO.toDomain() = TmdbMovieImages(
+    id = id,
+    backdrops = backdrops.map { it.toDomain() },
+    posters = posters.map { it.toDomain() },
+    logos = logos.map { it.toDomain() },
+)
+
+internal fun MovieImageDTO.toDomain() = TmdbMovieImage(
+    aspectRatio = aspectRatio,
+    filePath = filePath,
+    size = TmdbSize(width = width, height = height),
+    languageCode = iso6391,
+    voteAverage = voteAverage,
+    voteCount = voteCount,
 )

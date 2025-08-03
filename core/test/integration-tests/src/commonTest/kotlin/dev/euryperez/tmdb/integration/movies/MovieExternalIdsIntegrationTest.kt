@@ -1,8 +1,8 @@
 package dev.euryperez.tmdb.integration.movies
 
 import dev.euryperez.tmdb.core.test.BaseTest
+import dev.euryperez.tmdb.core.test.requireApiKey
 import dev.euryperez.tmdb.core.test.rules.MainCoroutineRule
-import dev.euryperez.tmdb.core.utils.extensions.getEnvironmentVariable
 import dev.euryperez.tmdb.data.common.models.DataResult
 import dev.euryperez.tmdb.data.movies.MoviesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,8 +24,6 @@ class MovieExternalIdsIntegrationTest : BaseTest {
 
     private val mainCoroutineRule = MainCoroutineRule()
 
-    private val apiKey: String? by lazy { getEnvironmentVariable("TMDB_API_KEY") }
-
     @BeforeTest
     override fun setup() {
         mainCoroutineRule.setup()
@@ -38,10 +36,7 @@ class MovieExternalIdsIntegrationTest : BaseTest {
 
     @Test
     fun `movie external ids returns real external ids for Fight Club`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository and Fight Club movie (known to have rich external ID data)
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -97,10 +92,7 @@ class MovieExternalIdsIntegrationTest : BaseTest {
     @Test
     fun `movie external ids serialization accuracy with real API response structure`() =
         runTest(timeout = TEST_TIMEOUT) {
-            val testApiKey = apiKey ?: run {
-                println("Skipping integration test - TMDB_API_KEY environment variable not set")
-                return@runTest
-            }
+            val testApiKey = requireApiKey()
 
             // Given: Repository for testing complete serialization pipeline
             val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -133,10 +125,7 @@ class MovieExternalIdsIntegrationTest : BaseTest {
     @Test
     fun `movie external ids for different movies show variety in external presence`() =
         runTest(timeout = TEST_TIMEOUT) {
-            val testApiKey = apiKey ?: run {
-                println("Skipping integration test - TMDB_API_KEY environment variable not set")
-                return@runTest
-            }
+            val testApiKey = requireApiKey()
 
             // Given: Repository for testing different movies with varying external presence
             val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -188,10 +177,7 @@ class MovieExternalIdsIntegrationTest : BaseTest {
 
     @Test
     fun `movie external ids handle movies with minimal external presence`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing edge cases with minimal external presence
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -245,10 +231,7 @@ class MovieExternalIdsIntegrationTest : BaseTest {
 
     @Test
     fun `movie external ids error handling with invalid movie ID`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository with valid API key but invalid movie ID
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -301,10 +284,7 @@ class MovieExternalIdsIntegrationTest : BaseTest {
 
     @Test
     fun `movie external ids edge cases with extreme movie IDs`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing edge case parameter handling
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -349,10 +329,7 @@ class MovieExternalIdsIntegrationTest : BaseTest {
 
     @Test
     fun `movie external ids cross platform compatibility`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository that should work across KMP targets
         val repository = MoviesRepository.factory(apiKey = testApiKey)
