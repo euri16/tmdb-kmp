@@ -10,6 +10,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
@@ -55,6 +56,9 @@ class MovieDetailsIntegrationTest : BaseTest {
 
         // Same movie ID but potentially different titles/overviews
         assertTrue(englishMovie.id == spanishMovie.id, "Should be same movie ID")
+
+        assertEquals("The Godfather", englishMovie.title, "English overview should exist")
+        assertEquals("El padrino", spanishMovie.title, "Spanish overview should exist")
 
         // If Spanish localization exists, overview might be different
         // (Not all movies have full localization, so we just verify the API accepts language param)

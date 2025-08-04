@@ -90,12 +90,47 @@ kotlin {
 
         iosMain {
             dependencies {
-                // Add iOS-specific dependencies here. This a source set created by Kotlin Gradle
-                // Plugin (KGP) that each specific iOS target (e.g., iosX64) depends on as
-                // part of KMP’s default source set hierarchy. Note that this source set depends
-                // on common by default and will correctly pull the iOS artifacts of any
-                // KMP dependencies declared in commonMain.
+                kotlin.srcDir("build/generated/source/buildConfig/ios")
             }
         }
+    }
+}
+
+val generateBuildConfig = tasks.register<GenerateIosBuildConfigTask>("generateIosBuildConfig") {
+    apiKey.set(providers.environmentVariable("TMDB_API_KEY").orElse(""))
+    outputDir.set(layout.buildDirectory.dir("generated/source/buildConfig/ios"))
+}
+
+abstract class GenerateIosBuildConfigTask : DefaultTask() {
+    @get:Input
+    abstract val apiKey: Property<String>
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @TaskAction
+    fun generate() {
+        val dir = outputDir.get().asFile
+        dir.mkdirs()
+
+        val buildConfigFile = File(dir, "BuildConfig.kt")
+        buildConfigFile.writeText(
+            """
+            package dev.euryperez.tmdb.integration
+
+            object BuildConfig {
+                const val TMDB_API_KEY = "${apiKey.get()}"
+            }
+            """.trimIndent(),
+        )
+    }
+}
+
+afterEvaluate {
+    tasks.matching {
+        it.name.contains("compileKotlinIosX64", ignoreCase = true) ||
+            it.name == "compileKotlinIosSimulatorArm64"
+    }.configureEach {
+        dependsOn(generateBuildConfig)
     }
 }
