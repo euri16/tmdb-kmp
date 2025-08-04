@@ -10,6 +10,8 @@ import dev.euryperez.tmdb.data.movies.api.dtos.MovieCrewMemberDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieDetailsDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieExternalIdsResponseDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieImageDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieImagesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieListResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.NowPlayingMoviesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.UpcomingMoviesResponseDTO
@@ -210,4 +212,42 @@ internal fun MovieExternalIdsResponseDTO.Companion.test(
     facebookId = facebookId,
     instagramId = instagramId,
     twitterId = twitterId,
+)
+
+internal fun MovieImageDTO.Companion.test(
+    aspectRatio: Double = 1.778,
+    filePath: String = "/test-image.jpg",
+    height: Int = 1080,
+    width: Int = 1920,
+    iso6391: String? = "en",
+    voteAverage: Double = 7.5,
+    voteCount: Int = 150,
+): MovieImageDTO = MovieImageDTO(
+    aspectRatio = aspectRatio,
+    filePath = filePath,
+    height = height,
+    width = width,
+    iso6391 = iso6391,
+    voteAverage = voteAverage,
+    voteCount = voteCount,
+)
+
+internal fun MovieImagesResponseDTO.Companion.test(
+    id: Int = 550,
+    backdrops: List<MovieImageDTO> = listOf(
+        MovieImageDTO.test(filePath = "/backdrop1.jpg", aspectRatio = 1.778),
+        MovieImageDTO.test(filePath = "/backdrop2.jpg", aspectRatio = 1.778),
+    ),
+    posters: List<MovieImageDTO> = listOf(
+        MovieImageDTO.test(filePath = "/poster1.jpg", aspectRatio = 0.667, width = 500, height = 750),
+        MovieImageDTO.test(filePath = "/poster2.jpg", aspectRatio = 0.667, width = 500, height = 750),
+    ),
+    logos: List<MovieImageDTO> = listOf(
+        MovieImageDTO.test(filePath = "/logo1.png", aspectRatio = 2.0, width = 400, height = 200, iso6391 = null),
+    ),
+): MovieImagesResponseDTO = MovieImagesResponseDTO(
+    id = id,
+    backdrops = backdrops,
+    posters = posters,
+    logos = logos,
 )

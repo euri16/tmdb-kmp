@@ -1,8 +1,8 @@
 package dev.euryperez.tmdb.integration
 
 import dev.euryperez.tmdb.core.test.BaseTest
+import dev.euryperez.tmdb.core.test.requireApiKey
 import dev.euryperez.tmdb.core.test.rules.MainCoroutineRule
-import dev.euryperez.tmdb.core.utils.extensions.getEnvironmentVariable
 import dev.euryperez.tmdb.data.common.models.DataResult
 import dev.euryperez.tmdb.data.movies.MoviesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,7 +28,7 @@ import kotlin.time.Duration.Companion.seconds
  * 2. Set environment variable: export TMDB_API_KEY="your_api_key_here"
  * 3. Run: ./gradlew :integration-tests:jvmTest --tests "*TmdbApiEndToEndTest*"
  *
- * Without an API key, the test will skip gracefully with an informative message.
+ * Without an API key, the test will fail with a clear error message.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class TmdbApiEndToEndTest : BaseTest {
@@ -48,23 +48,7 @@ class TmdbApiEndToEndTest : BaseTest {
     @Test
     fun `consumer can use library to retrieve real movie data from TMDB API`() = runTest(timeout = 30.seconds) {
         // Get API key from environment - this demonstrates real-world usage
-        val apiKey = getEnvironmentVariable("TMDB_API_KEY")
-
-        if (apiKey == null) {
-            println("⏭️ SKIPPING INTEGRATION TEST")
-            println("   Reason: TMDB_API_KEY environment variable not set")
-            println("   To run this test:")
-            println("   1. Get TMDB API key from https://www.themoviedb.org/settings/api")
-            println("   2. Set environment: export TMDB_API_KEY=\"your_key_here\"")
-            println("   3. Run: ./gradlew :data:movies:jvmTest --tests \"*BasicIntegrationTest*\"")
-            println("")
-            println("   This test verifies:")
-            println("   - Real HTTP client integration with TMDB API")
-            println("   - Actual network calls and response serialization")
-            println("   - End-to-end functionality from consumer perspective")
-            println("   - Authentication and error handling")
-            return@runTest
-        }
+        val apiKey = requireApiKey()
 
         println("🚀 RUNNING INTEGRATION TEST with real TMDB API")
         println("   This test makes actual network calls to TMDB...")

@@ -1,6 +1,6 @@
 package dev.euryperez.tmdb.core.network
 
-import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -19,7 +19,9 @@ import co.touchlab.kermit.Logger as KermitLogger
 fun buildHttpClient(
     baseUrl: String = "https://api.themoviedb.org/3/", // TODO: Pull from properties file
     apiKey: String,
-) = HttpClient {
+) = HttpClientFactory.create(baseUrl, apiKey)
+
+internal fun HttpClientConfig<*>.commonConfig(baseUrl: String, apiKey: String) {
     install(Resources)
 
     defaultRequest {

@@ -5,6 +5,7 @@ import dev.euryperez.tmdb.core.models.movies.TmdbMovieAlternativeTitles
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieCredits
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieDetails
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieExternalIds
+import dev.euryperez.tmdb.core.models.movies.TmdbMovieImages
 import dev.euryperez.tmdb.core.utils.coroutines.DispatcherProvider
 import dev.euryperez.tmdb.core.utils.coroutines.DispatcherProviderImpl
 import dev.euryperez.tmdb.data.common.extensions.toDataResult
@@ -94,6 +95,20 @@ internal class MoviesRepositoryImpl(
             moviesApi.getMovieExternalIds(movieId = movieId)
                 .toDataResult()
                 .map { it.toDomain() }
+        }
+    }
+
+    override suspend fun getMovieImages(
+        movieId: Int,
+        language: String?,
+        includeImageLanguage: List<String>?,
+    ): DataResult<TmdbMovieImages> {
+        return withContext(dispatcherProvider.default) {
+            moviesApi.getMovieImages(
+                movieId = movieId,
+                language = language,
+                includeImageLanguage = includeImageLanguage,
+            ).toDataResult().map { it.toDomain() }
         }
     }
 }

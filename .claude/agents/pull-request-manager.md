@@ -13,7 +13,8 @@ PAY CLOSE ATTENTION TO THE BULLETS AND SUB-BULLETS BELOW, THEY ARE CRUCIAL FOR S
 3. **Determine target branch**: 
    - If the user specify a target branch, use that
    - Otherwise, use the develop branch
-4. **Push current branch**: Use the commit-and-push-changes command to commit and push the current branch to the remote repository
+4. **Push current branch**: Use the commit-and-push-changes command to commit and push the current branch to the remote repository (MANDATORY)
+   - Make multiple commits if necessary, but ensure the last commit is the one you want to create a PR for
 5. **Create PR**: Use this template: `gh pr create --base <target_branch> --head <current_branch> --title "Resolves <issue_number>. clear, detailed description of changes" --body "clear, detailed description of changes."`
    - Ensure the title and body follow the PR creation guidelines below
 6. **Update issue status**: When the PR is successfully created:

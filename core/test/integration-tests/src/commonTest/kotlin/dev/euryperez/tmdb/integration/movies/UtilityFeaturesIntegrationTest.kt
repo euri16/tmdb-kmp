@@ -1,8 +1,8 @@
 package dev.euryperez.tmdb.integration.movies
 
 import dev.euryperez.tmdb.core.test.BaseTest
+import dev.euryperez.tmdb.core.test.requireApiKey
 import dev.euryperez.tmdb.core.test.rules.MainCoroutineRule
-import dev.euryperez.tmdb.core.utils.extensions.getEnvironmentVariable
 import dev.euryperez.tmdb.data.common.models.DataResult
 import dev.euryperez.tmdb.data.movies.MoviesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,8 +24,6 @@ class UtilityFeaturesIntegrationTest : BaseTest {
 
     private val mainCoroutineRule = MainCoroutineRule()
 
-    private val apiKey: String? by lazy { getEnvironmentVariable("TMDB_API_KEY") }
-
     @BeforeTest
     override fun setup() {
         mainCoroutineRule.setup()
@@ -38,10 +36,7 @@ class UtilityFeaturesIntegrationTest : BaseTest {
 
     @Test
     fun `repository instance management works correctly`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository creation using different methods
         val instance1 = MoviesRepository.getInstance(apiKey = testApiKey)
@@ -77,10 +72,7 @@ class UtilityFeaturesIntegrationTest : BaseTest {
 
     @Test
     fun `concurrent requests work correctly without interference`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing concurrent behavior
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -125,10 +117,7 @@ class UtilityFeaturesIntegrationTest : BaseTest {
 
     @Test
     fun `repository handles language consistency across multiple calls`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing language handling
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -169,10 +158,7 @@ class UtilityFeaturesIntegrationTest : BaseTest {
 
     @Test
     fun `repository performance is reasonable for typical usage patterns`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for performance testing
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -221,10 +207,7 @@ class UtilityFeaturesIntegrationTest : BaseTest {
 
     @Test
     fun `repository maintains data consistency across related endpoints`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing data consistency
         val repository = MoviesRepository.factory(apiKey = testApiKey)

@@ -1,8 +1,8 @@
 package dev.euryperez.tmdb.integration.movies
 
 import dev.euryperez.tmdb.core.test.BaseTest
+import dev.euryperez.tmdb.core.test.requireApiKey
 import dev.euryperez.tmdb.core.test.rules.MainCoroutineRule
-import dev.euryperez.tmdb.core.utils.extensions.getEnvironmentVariable
 import dev.euryperez.tmdb.data.common.models.DataResult
 import dev.euryperez.tmdb.data.movies.MoviesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,8 +23,6 @@ class MovieAlternativeTitlesIntegrationTest : BaseTest {
 
     private val mainCoroutineRule = MainCoroutineRule()
 
-    private val apiKey: String? by lazy { getEnvironmentVariable("TMDB_API_KEY") }
-
     @BeforeTest
     override fun setup() {
         mainCoroutineRule.setup()
@@ -37,10 +35,7 @@ class MovieAlternativeTitlesIntegrationTest : BaseTest {
 
     @Test
     fun `movie alternative titles returns real alternative titles for known movie`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository and Fight Club movie (known to have alternative titles)
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -103,10 +98,7 @@ class MovieAlternativeTitlesIntegrationTest : BaseTest {
 
     @Test
     fun `movie alternative titles for different movies show variety`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing different movies
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -148,10 +140,7 @@ class MovieAlternativeTitlesIntegrationTest : BaseTest {
 
     @Test
     fun `movie alternative titles country codes are valid ISO format`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing country code formats
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -195,10 +184,7 @@ class MovieAlternativeTitlesIntegrationTest : BaseTest {
 
     @Test
     fun `movie alternative titles include original and localized versions`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing title variety
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -251,10 +237,7 @@ class MovieAlternativeTitlesIntegrationTest : BaseTest {
     @Test
     fun `movie alternative titles handles movies with minimal international distribution`() =
         runTest(timeout = TEST_TIMEOUT) {
-            val testApiKey = apiKey ?: run {
-                println("Skipping integration test - TMDB_API_KEY environment variable not set")
-                return@runTest
-            }
+            val testApiKey = requireApiKey()
 
             // Given: Repository for testing edge cases
             val repository = MoviesRepository.factory(apiKey = testApiKey)

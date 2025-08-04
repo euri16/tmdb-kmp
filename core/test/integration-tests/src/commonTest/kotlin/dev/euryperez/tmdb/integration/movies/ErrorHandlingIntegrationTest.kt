@@ -1,8 +1,8 @@
 package dev.euryperez.tmdb.integration.movies
 
 import dev.euryperez.tmdb.core.test.BaseTest
+import dev.euryperez.tmdb.core.test.requireApiKey
 import dev.euryperez.tmdb.core.test.rules.MainCoroutineRule
-import dev.euryperez.tmdb.core.utils.extensions.getEnvironmentVariable
 import dev.euryperez.tmdb.data.common.models.DataResult
 import dev.euryperez.tmdb.data.movies.MoviesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,8 +22,6 @@ import kotlin.time.Duration.Companion.seconds
 class ErrorHandlingIntegrationTest : BaseTest {
 
     private val mainCoroutineRule = MainCoroutineRule()
-
-    private val apiKey: String? by lazy { getEnvironmentVariable("TMDB_API_KEY") }
 
     @BeforeTest
     override fun setup() {
@@ -61,10 +59,7 @@ class ErrorHandlingIntegrationTest : BaseTest {
 
     @Test
     fun `network error handling works with non-existent movie ID`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository with valid API key but invalid movie ID
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -93,10 +88,7 @@ class ErrorHandlingIntegrationTest : BaseTest {
 
     @Test
     fun `error handling works across different endpoints`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing error handling across endpoints
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -204,10 +196,7 @@ class ErrorHandlingIntegrationTest : BaseTest {
 
     @Test
     fun `error handling with edge case parameters`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing edge case parameter handling
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -246,20 +235,11 @@ class ErrorHandlingIntegrationTest : BaseTest {
         println(
             "\tHigh page result: ${if (highPageResult is DataResult.Success) "Success (${highPageResult.data.size} items)" else "Failure"}",
         )
-        println(
-            "\tZero ID result: ${if (zeroIdResult is DataResult.Failure) "Failed as expected" else "Unexpected success"}",
-        )
-        println(
-            "\tNegative ID result: ${if (negativeIdResult is DataResult.Failure) "Failed as expected" else "Unexpected success"}",
-        )
     }
 
     @Test
     fun `search error handling with problematic queries`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing search error scenarios
         val repository = MoviesRepository.factory(apiKey = testApiKey)

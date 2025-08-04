@@ -1,8 +1,8 @@
 package dev.euryperez.tmdb.integration.movies
 
 import dev.euryperez.tmdb.core.test.BaseTest
+import dev.euryperez.tmdb.core.test.requireApiKey
 import dev.euryperez.tmdb.core.test.rules.MainCoroutineRule
-import dev.euryperez.tmdb.core.utils.extensions.getEnvironmentVariable
 import dev.euryperez.tmdb.data.common.models.DataResult
 import dev.euryperez.tmdb.data.movies.MoviesRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -10,6 +10,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
@@ -23,8 +24,6 @@ class MovieDetailsIntegrationTest : BaseTest {
 
     private val mainCoroutineRule = MainCoroutineRule()
 
-    private val apiKey: String? by lazy { getEnvironmentVariable("TMDB_API_KEY") }
-
     @BeforeTest
     override fun setup() {
         mainCoroutineRule.setup()
@@ -37,10 +36,7 @@ class MovieDetailsIntegrationTest : BaseTest {
 
     @Test
     fun `different language parameters return localized content`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing localization
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -61,6 +57,9 @@ class MovieDetailsIntegrationTest : BaseTest {
         // Same movie ID but potentially different titles/overviews
         assertTrue(englishMovie.id == spanishMovie.id, "Should be same movie ID")
 
+        assertEquals("The Godfather", englishMovie.title, "English overview should exist")
+        assertEquals("El padrino", spanishMovie.title, "Spanish overview should exist")
+
         // If Spanish localization exists, overview might be different
         // (Not all movies have full localization, so we just verify the API accepts language param)
         assertTrue(englishMovie.overview.isNotBlank(), "English overview should exist")
@@ -75,10 +74,7 @@ class MovieDetailsIntegrationTest : BaseTest {
 
     @Test
     fun `end to end serialization accuracy with real API response structure`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing complete serialization pipeline
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -127,10 +123,7 @@ class MovieDetailsIntegrationTest : BaseTest {
 
     @Test
     fun `movie details returns comprehensive data for well-known movies`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing comprehensive movie data
         val repository = MoviesRepository.factory(apiKey = testApiKey)
@@ -172,10 +165,7 @@ class MovieDetailsIntegrationTest : BaseTest {
 
     @Test
     fun `movie details handles different movie types correctly`() = runTest(timeout = TEST_TIMEOUT) {
-        val testApiKey = apiKey ?: run {
-            println("Skipping integration test - TMDB_API_KEY environment variable not set")
-            return@runTest
-        }
+        val testApiKey = requireApiKey()
 
         // Given: Repository for testing different movie types
         val repository = MoviesRepository.factory(apiKey = testApiKey)

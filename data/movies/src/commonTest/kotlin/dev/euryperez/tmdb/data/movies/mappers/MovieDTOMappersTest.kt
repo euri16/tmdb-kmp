@@ -3,11 +3,16 @@ package dev.euryperez.tmdb.data.movies.mappers
 import dev.euryperez.tmdb.core.models.movies.TmdbAlternativeTitle
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieAlternativeTitles
 import dev.euryperez.tmdb.core.models.movies.TmdbMovieExternalIds
+import dev.euryperez.tmdb.core.models.movies.TmdbMovieImage
+import dev.euryperez.tmdb.core.models.movies.TmdbMovieImages
+import dev.euryperez.tmdb.core.models.movies.TmdbSize
 import dev.euryperez.tmdb.core.test.BaseTest
 import dev.euryperez.tmdb.core.test.rules.MainCoroutineRule
 import dev.euryperez.tmdb.data.movies.api.dtos.AlternativeTitleDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieAlternativeTitlesResponseDTO
 import dev.euryperez.tmdb.data.movies.api.dtos.MovieExternalIdsResponseDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieImageDTO
+import dev.euryperez.tmdb.data.movies.api.dtos.MovieImagesResponseDTO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -443,5 +448,362 @@ class MovieDTOMappersTest : BaseTest {
         assertEquals("socialmovie", result.facebookId)
         assertEquals("socialmovieig", result.instagramId)
         assertEquals("socialmovietwitter", result.twitterId)
+    }
+
+    // ============================
+    // MovieImageDTO Tests
+    // ============================
+
+    @Test
+    fun `MovieImageDTO toDomain maps all fields correctly`() {
+        // Given
+        val dto = MovieImageDTO(
+            aspectRatio = 1.778,
+            filePath = "/test-backdrop.jpg",
+            height = 1080,
+            width = 1920,
+            iso6391 = "en",
+            voteAverage = 8.5,
+            voteCount = 250,
+        )
+
+        // When
+        val result = dto.toDomain()
+
+        // Then
+        val expected = TmdbMovieImage(
+            aspectRatio = 1.778,
+            filePath = "/test-backdrop.jpg",
+            size = TmdbSize(width = 1920, height = 1080),
+            languageCode = "en",
+            voteAverage = 8.5,
+            voteCount = 250,
+        )
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun `MovieImageDTO toDomain maps separate width height to TmdbSize correctly`() {
+        // Given
+        val dto = MovieImageDTO(
+            aspectRatio = 0.667,
+            filePath = "/test-poster.jpg",
+            height = 750,
+            width = 500,
+            iso6391 = "es",
+            voteAverage = 7.2,
+            voteCount = 150,
+        )
+
+        // When
+        val result = dto.toDomain()
+
+        // Then
+        assertEquals(TmdbSize(width = 500, height = 750), result.size)
+        assertEquals(500, result.size.width)
+        assertEquals(750, result.size.height)
+    }
+
+    @Test
+    fun `MovieImageDTO toDomain maps iso6391 to languageCode correctly`() {
+        // Given
+        val dto = MovieImageDTO(
+            aspectRatio = 2.0,
+            filePath = "/test-logo.png",
+            height = 200,
+            width = 400,
+            iso6391 = "fr",
+            voteAverage = 6.8,
+            voteCount = 75,
+        )
+
+        // When
+        val result = dto.toDomain()
+
+        // Then
+        assertEquals("fr", result.languageCode)
+    }
+
+    @Test
+    fun `MovieImageDTO toDomain handles null iso6391 language code`() {
+        // Given
+        val dto = MovieImageDTO(
+            aspectRatio = 1.5,
+            filePath = "/neutral-logo.png",
+            height = 300,
+            width = 450,
+            iso6391 = null,
+            voteAverage = 9.0,
+            voteCount = 500,
+        )
+
+        // When
+        val result = dto.toDomain()
+
+        // Then
+        assertNull(result.languageCode)
+        assertEquals(1.5, result.aspectRatio)
+        assertEquals("/neutral-logo.png", result.filePath)
+        assertEquals(TmdbSize(width = 450, height = 300), result.size)
+        assertEquals(9.0, result.voteAverage)
+        assertEquals(500, result.voteCount)
+    }
+
+    @Test
+    fun `MovieImageDTO toDomain preserves all numeric values correctly`() {
+        // Given
+        val dto = MovieImageDTO(
+            aspectRatio = 1.777777,
+            filePath = "/precise-image.jpg",
+            height = 1080,
+            width = 1920,
+            iso6391 = "de",
+            voteAverage = 7.654321,
+            voteCount = 999,
+        )
+
+        // When
+        val result = dto.toDomain()
+
+        // Then
+        assertEquals(1.777777, result.aspectRatio)
+        assertEquals(7.654321, result.voteAverage)
+        assertEquals(999, result.voteCount)
+        assertEquals(TmdbSize(width = 1920, height = 1080), result.size)
+    }
+
+    // =====================================
+    // MovieImagesResponseDTO Tests
+    // =====================================
+
+    @Test
+    fun `MovieImagesResponseDTO toDomain maps all image types correctly`() {
+        // Given
+        val backdropDto = MovieImageDTO(
+            aspectRatio = 1.778,
+            filePath = "/backdrop.jpg",
+            height = 1080,
+            width = 1920,
+            iso6391 = "en",
+            voteAverage = 8.0,
+            voteCount = 200,
+        )
+        val posterDto = MovieImageDTO(
+            aspectRatio = 0.667,
+            filePath = "/poster.jpg",
+            height = 750,
+            width = 500,
+            iso6391 = "es",
+            voteAverage = 7.5,
+            voteCount = 150,
+        )
+        val logoDto = MovieImageDTO(
+            aspectRatio = 2.0,
+            filePath = "/logo.png",
+            height = 200,
+            width = 400,
+            iso6391 = null,
+            voteAverage = 9.0,
+            voteCount = 300,
+        )
+
+        val dto = MovieImagesResponseDTO(
+            id = 550,
+            backdrops = listOf(backdropDto),
+            posters = listOf(posterDto),
+            logos = listOf(logoDto),
+        )
+
+        // When
+        val result = dto.toDomain()
+
+        // Then
+        val expected = TmdbMovieImages(
+            id = 550,
+            backdrops = listOf(backdropDto.toDomain()),
+            posters = listOf(posterDto.toDomain()),
+            logos = listOf(logoDto.toDomain()),
+        )
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun `MovieImagesResponseDTO toDomain handles empty image arrays`() {
+        // Given
+        val dto = MovieImagesResponseDTO(
+            id = 999,
+            backdrops = emptyList(),
+            posters = emptyList(),
+            logos = emptyList(),
+        )
+
+        // When
+        val result = dto.toDomain()
+
+        // Then
+        assertEquals(999, result.id)
+        assertEquals(0, result.backdrops.size)
+        assertEquals(0, result.posters.size)
+        assertEquals(0, result.logos.size)
+    }
+
+    @Test
+    fun `MovieImagesResponseDTO toDomain handles multiple images of each type`() {
+        // Given
+        val backdrop1 = MovieImageDTO(
+            aspectRatio = 1.778,
+            filePath = "/backdrop1.jpg",
+            height = 1080,
+            width = 1920,
+            iso6391 = "en",
+            voteAverage = 8.5,
+            voteCount = 250,
+        )
+        val backdrop2 = MovieImageDTO(
+            aspectRatio = 1.778,
+            filePath = "/backdrop2.jpg",
+            height = 720,
+            width = 1280,
+            iso6391 = "es",
+            voteAverage = 7.8,
+            voteCount = 180,
+        )
+        val poster1 = MovieImageDTO(
+            aspectRatio = 0.667,
+            filePath = "/poster1.jpg",
+            height = 750,
+            width = 500,
+            iso6391 = "en",
+            voteAverage = 9.0,
+            voteCount = 400,
+        )
+        val poster2 = MovieImageDTO(
+            aspectRatio = 0.667,
+            filePath = "/poster2.jpg",
+            height = 1500,
+            width = 1000,
+            iso6391 = "fr",
+            voteAverage = 8.2,
+            voteCount = 320,
+        )
+        val logo1 = MovieImageDTO(
+            aspectRatio = 2.5,
+            filePath = "/logo1.png",
+            height = 160,
+            width = 400,
+            iso6391 = null,
+            voteAverage = 7.5,
+            voteCount = 100,
+        )
+
+        val dto = MovieImagesResponseDTO(
+            id = 550,
+            backdrops = listOf(backdrop1, backdrop2),
+            posters = listOf(poster1, poster2),
+            logos = listOf(logo1),
+        )
+
+        // When
+        val result = dto.toDomain()
+
+        // Then
+        assertEquals(550, result.id)
+        assertEquals(2, result.backdrops.size)
+        assertEquals(2, result.posters.size)
+        assertEquals(1, result.logos.size)
+
+        // Verify backdrops
+        assertEquals("/backdrop1.jpg", result.backdrops[0].filePath)
+        assertEquals("/backdrop2.jpg", result.backdrops[1].filePath)
+        assertEquals("en", result.backdrops[0].languageCode)
+        assertEquals("es", result.backdrops[1].languageCode)
+
+        // Verify posters
+        assertEquals("/poster1.jpg", result.posters[0].filePath)
+        assertEquals("/poster2.jpg", result.posters[1].filePath)
+        assertEquals(TmdbSize(width = 500, height = 750), result.posters[0].size)
+        assertEquals(TmdbSize(width = 1000, height = 1500), result.posters[1].size)
+
+        // Verify logos
+        assertEquals("/logo1.png", result.logos[0].filePath)
+        assertNull(result.logos[0].languageCode)
+        assertEquals(TmdbSize(width = 400, height = 160), result.logos[0].size)
+    }
+
+    @Test
+    fun `MovieImagesResponseDTO toDomain preserves movie id correctly`() {
+        // Given
+        val movieId = 12345
+        val dto = MovieImagesResponseDTO(
+            id = movieId,
+            backdrops = listOf(
+                MovieImageDTO(
+                    aspectRatio = 1.778,
+                    filePath = "/test.jpg",
+                    height = 1080,
+                    width = 1920,
+                    iso6391 = "en",
+                    voteAverage = 8.0,
+                    voteCount = 100,
+                ),
+            ),
+            posters = emptyList(),
+            logos = emptyList(),
+        )
+
+        // When
+        val result = dto.toDomain()
+
+        // Then
+        assertEquals(movieId, result.id)
+    }
+
+    @Test
+    fun `MovieImagesResponseDTO toDomain handles mixed language images`() {
+        // Given
+        val englishImage = MovieImageDTO(
+            aspectRatio = 1.778,
+            filePath = "/english.jpg",
+            height = 1080,
+            width = 1920,
+            iso6391 = "en",
+            voteAverage = 8.0,
+            voteCount = 200,
+        )
+        val spanishImage = MovieImageDTO(
+            aspectRatio = 1.778,
+            filePath = "/spanish.jpg",
+            height = 1080,
+            width = 1920,
+            iso6391 = "es",
+            voteAverage = 7.5,
+            voteCount = 150,
+        )
+        val neutralImage = MovieImageDTO(
+            aspectRatio = 2.0,
+            filePath = "/neutral.png",
+            height = 200,
+            width = 400,
+            iso6391 = null,
+            voteAverage = 9.0,
+            voteCount = 300,
+        )
+
+        val dto = MovieImagesResponseDTO(
+            id = 550,
+            backdrops = listOf(englishImage, spanishImage),
+            posters = emptyList(),
+            logos = listOf(neutralImage),
+        )
+
+        // When
+        val result = dto.toDomain()
+
+        // Then
+        assertEquals(2, result.backdrops.size)
+        assertEquals("en", result.backdrops[0].languageCode)
+        assertEquals("es", result.backdrops[1].languageCode)
+        assertEquals(1, result.logos.size)
+        assertNull(result.logos[0].languageCode)
     }
 }
