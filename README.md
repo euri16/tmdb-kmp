@@ -1,5 +1,7 @@
 # tmdb-kmp
 
+A Kotlin Multiplatform library for accessing The Movie Database (TMDB) API. For detailed information about the project architecture, module structure, and design patterns, see [ARCHITECTURE.md](ARCHITECTURE.md).
+
 ## Integration Tests
 
 This project includes comprehensive integration tests that verify end-to-end functionality against the real TMDB API. For detailed information about running and understanding these tests, see [INTEGRATION-TESTS.md](INTEGRATION-TESTS.md).

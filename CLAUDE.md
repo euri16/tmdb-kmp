@@ -46,8 +46,15 @@ This is a Kotlin Multiplatform (KMP) library for accessing The Movie Database (T
 # Build the project
 ./gradlew build
 
-# Run tests
-./gradlew test
+# Run unit tests
+./gradlew testAndroidHostTest
+
+# Run integration tests (requires TMDB_API_KEY environment variable)
+export TMDB_API_KEY="your_api_key_here"
+./gradlew :core:test:integration-tests:allTest
+
+# Run specific integration test class
+./gradlew :core:test:integration-tests:jvmTest --tests "*TmdbApiEndToEndTest*"
 
 # Build Android sandbox app
 ./gradlew :androidApp:build
@@ -79,3 +86,49 @@ The library integrates with TMDB API v3. The main HTTP client is configured in `
 
 Library dependencies flow: `core/models` ← `core/network` ← `data/common` ← `data/movies`
 Sandbox apps depend on data modules to test and demonstrate library functionality.
+
+## Error Handling Architecture
+
+The library uses a two-tier error handling approach:
+
+- **`ApiResult`** (`core/network/models/ApiResult.kt`) - Low-level network error handling:
+  - `HttpError` - HTTP status code errors  
+  - `NetworkError` - Network connectivity issues
+  - `SerializationError` - JSON parsing failures
+  - Uses `getAsApiResult<R, T>()` extension for automatic error mapping
+
+- **`DataResult`** (`data/common/models/DataResult.kt`) - High-level repository error handling:
+  - Simple success/failure outcomes for business logic consumers
+  - Transforms `ApiResult` to `DataResult` via extension functions
+
+## Integration Tests
+
+Integration tests are located in `core/test/integration-tests/` and test real TMDB API endpoints. Key points:
+
+- **Required**: Set `TMDB_API_KEY` environment variable for tests to run
+- **Test behavior**: Tests **fail** (not skip) when API key is missing via `requireApiKey()` function
+- **Test utility**: Use `BaseTest.requireApiKey()` for consistent API key validation
+- **Coverage**: End-to-end API testing, error handling, cross-platform compatibility
+
+## Important Patterns
+
+### Repository Factory Pattern
+```kotlin
+val repository = MoviesRepository.factory(apiKey = "your_key")
+```
+
+### API Result Extension Usage
+```kotlin
+// In API implementations
+suspend fun getMovie(): ApiResult<MovieDto> = httpClient.getAsApiResult<MovieDto, MovieDto> { 
+    // HTTP call
+}
+```
+
+### DTO to Domain Mapping
+DTOs from API are mapped to domain models in `data/movies/models/` to maintain clean separation between API contracts and business logic.
+
+### Multiplatform Testing
+- Unit tests use `MainCoroutineRule` for coroutine testing
+- Integration tests support all KMP targets (JVM, iOS, Android)
+- Mock testing with Mokkery framework for API abstractions

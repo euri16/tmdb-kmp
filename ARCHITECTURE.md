@@ -11,16 +11,31 @@ The TMDB KMP library is designed as a modular, multiplatform solution for access
 ```
 TMDBMultiplatform/
 ├── core/                    # Foundational library components
-│   ├── models/             # Shared data models
-│   ├── network/            # HTTP client and networking utilities
-│   ├── utils/              # Common utilities
-│   └── test/               # Test utilities and common test code
+│   ├── models/             # Shared data models and domain objects
+│   ├── network/            # HTTP client configuration and extensions
+│   │   ├── extensions/     # Ktor extensions (getAsApiResult, error handling)
+│   │   └── models/         # ApiResult and network-specific models
+│   ├── utils/              # Common utilities and platform abstractions
+│   │   └── DispatcherProvider # Coroutine dispatcher dependency injection
+│   └── test/               # Comprehensive test infrastructure
+│       ├── test-common/    # Shared test utilities (BaseTest, MainCoroutineRule)
+│       └── integration-tests/ # Real API integration test framework
 ├── data/                   # Data layer modules
-│   ├── common/             # Shared data layer utilities
+│   ├── common/             # Shared data layer utilities and base classes
+│   │   ├── extensions/     # ApiResult.toDataResult() transformations
+│   │   └── models/         # DataResult and common data types
 │   └── movies/             # Movies domain implementation
-├── androidApp/             # Android sandbox application
-├── iosApp/                 # iOS sandbox application
-└── mcp-server/             # Model Context Protocol server
+│       ├── api/            # API client abstractions and implementations
+│       ├── repository/     # Repository interfaces and implementations
+│       └── models/         # DTOs and domain model mappers
+├── androidApp/             # Android sandbox application (Jetpack Compose)
+├── iosApp/                 # iOS sandbox application (SwiftUI)
+├── mcp-server/             # Model Context Protocol server
+│   └── tools/              # MCP tools for movie operations
+├── config/                 # Code quality configuration
+│   └── detekt.yml          # Static analysis rules
+└── gradle/                 # Build system configuration
+    └── libs.versions.toml  # Centralized dependency management
 ```
 
 ## Layer Architecture
@@ -30,9 +45,18 @@ TMDBMultiplatform/
 **Purpose**: Provides foundational components shared across all modules.
 
 - **`core/models`**: Domain models and data classes
-- **`core/network`**: HTTP client configuration using Ktor
-- **`core/utils`**: Common utilities and extensions
-- **`core/test`**: Shared test utilities and base test classes
+- **`core/network`**: HTTP client configuration using Ktor with critical extensions:
+  - `getAsApiResult<R, T>()` - Handles HTTP errors and maps to `ApiResult`
+  - Comprehensive error mapping from HTTP status codes
+  - Proper coroutine cancellation handling
+- **`core/utils`**: Platform abstractions and common utilities:
+  - `DispatcherProvider` - Dependency injection for coroutine dispatchers
+  - Platform-specific implementations for environment variables
+  - Date parsing extensions (`String.localDateOrNull()`)
+- **`core/test`**: Comprehensive test infrastructure:
+  - `BaseTest` interface and `MainCoroutineRule` for coroutine testing
+  - `NetworkTestFactory` for MockEngine configuration
+  - Integration test framework with real API endpoints
 
 ### Data Layer (`data/`)
 
@@ -104,7 +128,14 @@ class MoviesApiImpl(
 
 ### Error Handling
 
-The library uses a custom `DataResult` type for consistent error handling across all API operations.
+The library uses a two-tier error handling approach:
+
+- **`ApiResult`** (`core/network/models/ApiResult.kt`) - Low-level network error handling with specific error types:
+  - `HttpError` - HTTP status code errors
+  - `NetworkError` - Network connectivity issues  
+  - `SerializationError` - JSON parsing failures
+
+- **`DataResult`** (`data/common/models/DataResult.kt`) - High-level repository error handling that abstracts network details into simple success/failure outcomes for business logic consumers.
 
 ### DTO Mapping
 
@@ -156,9 +187,18 @@ Data Transfer Objects (DTOs) are mapped to domain models to maintain clean separ
 - Base URL configuration
 
 ### Build Configuration
-- Multiplatform targets: Android, iOS, JVM
-- Shared source sets for common code
-- Platform-specific implementations where needed
+- **Multiplatform targets**: Android, iOS (iosX64, iosArm64, iosSimulatorArm64), JVM
+- **Shared source sets**: Common code with platform-specific implementations
+- **Version catalog**: Centralized dependency management in `gradle/libs.versions.toml`
+- **Project accessors**: TYPESAFE_PROJECT_ACCESSORS for type-safe module dependencies (`projects.core.network`)
+- **Custom Gradle tasks**:
+  - `validateCode` - Runs all code quality checks
+  - `analyzeCode` - Detekt static analysis
+  - `checkFormatting` - Spotless formatting verification  
+  - `formatCode` - Automatic code formatting
+  - `installGitHooks` - Sets up pre-commit validation hooks
+- **iOS framework naming**: Custom `xcfName` conventions for different modules
+- **Android library configuration**: Namespace conventions, SDK targets, test runners
 
 ## Extension Points
 
